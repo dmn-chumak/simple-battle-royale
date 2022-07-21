@@ -1,6 +1,6 @@
-export const SERVER_PATH = "/game";
+export const SERVER_PORT = 5000;
 
-export const FRAME_RATE = 1000 / 30;
+export const SERVER_FRAME_RATE = 1000 / 30;
 
 export const CLIENT_RADIUS = 25;
 

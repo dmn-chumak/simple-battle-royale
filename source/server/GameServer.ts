@@ -2,15 +2,15 @@ import { b2BodyType } from "@box2d/core";
 import { b2CircleShape } from "@box2d/core";
 import { b2World } from "@box2d/core";
 import * as Express from "express";
-import * as ExpressWebSocket from "express-ws";
+import { WebSocketServer } from "ws";
 import { WebSocket } from "ws";
 import { CommandMessageDecoder } from "../common/CommandMessageDecoder";
 import { CommandMessageEncoder } from "../common/CommandMessageEncoder";
 import { CommandType } from "../common/CommandType";
-import { SERVER_PATH } from "../common/GameConfig";
+import { SERVER_PORT } from "../common/GameConfig";
 import { CLIENT_SPEED } from "../common/GameConfig";
 import { CLIENT_RADIUS } from "../common/GameConfig";
-import { FRAME_RATE } from "../common/GameConfig";
+import { SERVER_FRAME_RATE } from "../common/GameConfig";
 import { ChangeDirectionCommand } from "./commands/ChangeDirectionCommand";
 import { ChangePositionCommand } from "./commands/ChangePositionCommand";
 import { GameClientState } from "./GameClientState";
@@ -19,7 +19,8 @@ import { ServerOutcomeMessageType } from "./types/ServerOutcomeMessageType";
 
 export class GameServer
 {
-	private _express: ExpressWebSocket.Application;
+	private _express: Express.Application;
+	private _server: WebSocketServer;
 
 	private readonly _commandsMap: ServerCommandFactory;
 
@@ -33,9 +34,8 @@ export class GameServer
 	{
 		this._world = b2World.Create({ x: 0, y: 0 });
 
-		this._express = ExpressWebSocket(Express()).app;
+		this._express = Express();
 		this._express.use(Express.static("resource"));
-		this._express.ws(SERVER_PATH, this.socketConnectHandler.bind(this));
 
 		this._nextIndex = 0;
 		this._clients = [];
@@ -68,7 +68,7 @@ export class GameServer
 			[CommandType.CL_CHANGE_DIRECTION]: ChangeDirectionCommand
 		};
 
-		setInterval(this.updateState.bind(this), FRAME_RATE);
+		setInterval(this.updateState.bind(this), SERVER_FRAME_RATE);
 	}
 
 	private updateState(): void
@@ -101,7 +101,7 @@ export class GameServer
 			y: Math.random() * CLIENT_SPEED
 		});
 
-		this._world.Step(FRAME_RATE, { positionIterations: 3, velocityIterations: 3 });
+		this._world.Step(SERVER_FRAME_RATE, { positionIterations: 3, velocityIterations: 3 });
 
 		this.send({
 			type: CommandType.SV_WORLD_UPDATED,
@@ -204,8 +204,12 @@ export class GameServer
 
 	public start(): void
 	{
+		const httpServer = this._express.listen(process.env.PORT || SERVER_PORT);
+
+		this._server = new WebSocketServer({ server: httpServer });
+		this._server.on("connection", this.socketConnectHandler.bind(this));
+
 		console.log(">> Server started!");
-		this._express.listen(80);
 	}
 
 	public send(message: ServerOutcomeMessageType): void
