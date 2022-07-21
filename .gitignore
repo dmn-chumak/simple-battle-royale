@@ -1,3 +1,4 @@
 /output
+/resource/client.*
 /node_modules
 /.idea

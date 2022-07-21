@@ -1,11 +1,13 @@
 import { b2BodyType } from "@box2d/core";
 import { b2CircleShape } from "@box2d/core";
 import { b2World } from "@box2d/core";
+import * as Express from "express";
+import * as ExpressWebSocket from "express-ws";
 import { WebSocket } from "ws";
-import { WebSocketServer } from "ws";
 import { CommandMessageDecoder } from "../common/CommandMessageDecoder";
 import { CommandMessageEncoder } from "../common/CommandMessageEncoder";
 import { CommandType } from "../common/CommandType";
+import { SERVER_PATH } from "../common/GameConfig";
 import { CLIENT_SPEED } from "../common/GameConfig";
 import { CLIENT_RADIUS } from "../common/GameConfig";
 import { FRAME_RATE } from "../common/GameConfig";
@@ -17,6 +19,8 @@ import { ServerOutcomeMessageType } from "./types/ServerOutcomeMessageType";
 
 export class GameServer
 {
+	private _express: ExpressWebSocket.Application;
+
 	private readonly _commandsMap: ServerCommandFactory;
 
 	private readonly _clients: GameClientState[];
@@ -28,6 +32,10 @@ export class GameServer
 	public constructor()
 	{
 		this._world = b2World.Create({ x: 0, y: 0 });
+
+		this._express = ExpressWebSocket(Express()).app;
+		this._express.use(Express.static("resource"));
+		this._express.ws(SERVER_PATH, this.socketConnectHandler.bind(this));
 
 		this._nextIndex = 0;
 		this._clients = [];
@@ -194,10 +202,10 @@ export class GameServer
 		});
 	}
 
-	public start(socket: WebSocketServer): void
+	public start(): void
 	{
-		socket.on("connection", this.socketConnectHandler.bind(this));
 		console.log(">> Server started!");
+		this._express.listen(80);
 	}
 
 	public send(message: ServerOutcomeMessageType): void

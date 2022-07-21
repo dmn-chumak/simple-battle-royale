@@ -1,6 +1,10 @@
 # Simple Battle Royale
 
-A simple implementation of client-server architecture for multiplayer browser game.
+A simple implementation of the client-server architecture for a multiplayer browser game.
+
+Server works on top of [Express.js](https://expressjs.com/) and WebSockets (using simple JSON commands).
+
+Client works on top of [Three.js](https://threejs.org/) and [Pixi.js](https://pixijs.com/).
 
 ## Example
 

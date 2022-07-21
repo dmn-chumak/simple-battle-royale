@@ -1,5 +1,4 @@
-export const SERVER_HOST = "localhost";
-export const SERVER_PORT = 1234;
+export const SERVER_PATH = "/game";
 
 export const FRAME_RATE = 1000 / 30;
 

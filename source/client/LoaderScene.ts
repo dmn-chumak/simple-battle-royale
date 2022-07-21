@@ -1,5 +1,4 @@
-import { SERVER_HOST } from "../common/GameConfig";
-import { SERVER_PORT } from "../common/GameConfig";
+import { SERVER_PATH } from "../common/GameConfig";
 import { GameScene } from "./GameScene";
 import { Scene } from "./Scene";
 import { SceneManager } from "./SceneManager";
@@ -10,7 +9,7 @@ export class LoaderScene extends Scene
 	{
 		super.start(manager);
 
-		manager.socket = new WebSocket(`ws://${ SERVER_HOST }:${ SERVER_PORT }`);
+		manager.socket = new WebSocket(`${ location.protocol.replace("http", "ws") }//${ location.host }${ SERVER_PATH }`);
 
 		manager.socket.onclose = () =>
 		{

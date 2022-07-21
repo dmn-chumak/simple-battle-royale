@@ -1,7 +1,5 @@
 const Path = require("path");
 
-const commonExternals = {};
-const commonOutput = Path.resolve(__dirname, "output");
 const commonConfig = {
 	devtool: "cheap-module-source-map",
 	mode: "development",
@@ -33,10 +31,9 @@ module.exports = function (env, argv) {
 		modules.push({
 			...commonConfig,
 			entry: "./source/client.ts",
-			externals: commonExternals,
 			output: {
 				filename: "client.js",
-				path: commonOutput
+				path: Path.resolve(__dirname, "resource")
 			}
 		});
 	}
@@ -46,10 +43,9 @@ module.exports = function (env, argv) {
 			...commonConfig,
 			target: "node",
 			entry: "./source/server.ts",
-			externals: commonExternals,
 			output: {
 				filename: "server.js",
-				path: commonOutput
+				path: Path.resolve(__dirname, "output")
 			}
 		});
 	}
