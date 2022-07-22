@@ -1,9 +1,19 @@
 import { Container } from "pixi.js";
-import { SceneManager } from "./SceneManager";
+import { SceneManager } from "../SceneManager";
 
 export class Scene extends Container
 {
 	protected _manager: SceneManager;
+
+	public constructor()
+	{
+		super();
+	}
+
+	public get manager(): SceneManager
+	{
+		return this._manager;
+	}
 
 	public start(manager: SceneManager): void
 	{
@@ -11,6 +21,11 @@ export class Scene extends Container
 	}
 
 	public update(delta: number): void
+	{
+		// empty
+	}
+
+	public resize(): void
 	{
 		// empty
 	}

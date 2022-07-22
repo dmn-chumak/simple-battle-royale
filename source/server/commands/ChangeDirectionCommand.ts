@@ -1,11 +1,16 @@
-import { ChangeDirectionMessage } from "../../common/commands/ChangeDirectionMessage";
+import { ChangeDirectionMessage } from "../../common/client_messages/ChangeDirectionMessage";
+import { PLAYER_SPEED } from "../../common/GameConfig";
 import { ServerCommand } from "../ServerCommand";
 
 export class ChangeDirectionCommand extends ServerCommand<ChangeDirectionMessage>
 {
-	public execute(): void
+	public override execute(): void
 	{
-		this._client.data.deltaX = this._message.data.deltaX;
-		this._client.data.deltaY = this._message.data.deltaY;
+		const { deltaX, deltaY } = this._message.data;
+
+		this._client.player.body.SetLinearVelocity({
+			x: deltaX * PLAYER_SPEED,
+			y: deltaY * PLAYER_SPEED
+		});
 	}
 }

@@ -1,6 +1,6 @@
 import { Command } from "../common/Command";
 import { CommandMessage } from "../common/CommandMessage";
-import { GameScene } from "./GameScene";
+import { GameScene } from "./common_scenes/GameScene";
 
 export abstract class ClientCommand<MessageType extends CommandMessage> extends Command<MessageType>
 {

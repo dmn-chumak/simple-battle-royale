@@ -1,24 +1,18 @@
-import { Application, Container } from "pixi.js";
-import { Scene } from "./Scene";
+import { Container } from "pixi.js";
+import { ClientApplication } from "./ClientApplication";
+import { Scene } from "./common_scenes/Scene";
 
 export class SceneManager extends Container
 {
-	private readonly _application: Application;
-	private _scene: Scene;
-	private _socket: WebSocket;
+	protected readonly _application: ClientApplication;
+	protected _scene: Scene;
 
-	public constructor(application: Application)
+	public constructor(application: ClientApplication)
 	{
 		super();
 
 		this._application = application;
-		this._application.stage.addChild(this);
-		this._application.ticker.add(
-			(delta: number) =>
-			{
-				this.updateScene(delta);
-			}
-		);
+		this._scene = null;
 	}
 
 	public changeScene(scene: Scene): void
@@ -47,18 +41,21 @@ export class SceneManager extends Container
 		}
 	}
 
-	public get application(): Application
+	public resizeScene(): void
+	{
+		if (this._scene)
+		{
+			this._scene.resize();
+		}
+	}
+
+	public get application(): ClientApplication
 	{
 		return this._application;
 	}
 
-	public set socket(value: WebSocket)
+	public get scene(): Scene
 	{
-		this._socket = value;
-	}
-
-	public get socket(): WebSocket
-	{
-		return this._socket;
+		return this._scene;
 	}
 }

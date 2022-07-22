@@ -1,4 +1,4 @@
-import { GameServer } from "./server/GameServer";
+import { ServerApplication } from "./server/ServerApplication";
 
-const server = new GameServer();
+const server = new ServerApplication();
 server.start();

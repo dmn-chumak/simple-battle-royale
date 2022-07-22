@@ -1,4 +1,4 @@
-import { ChangeDirectionMessage } from "../../common/commands/ChangeDirectionMessage";
-import { ChangePositionMessage } from "../../common/commands/ChangePositionMessage";
+import { ChangeDirectionMessage } from "../../common/client_messages/ChangeDirectionMessage";
 
-export type ClientOutcomeMessageType = ChangePositionMessage | ChangeDirectionMessage;
+export type ClientOutcomeMessageType =
+	ChangeDirectionMessage;
