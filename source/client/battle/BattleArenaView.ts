@@ -1,6 +1,6 @@
-import { Container } from "pixi.js";
+import { Object3D } from "three";
 
-export class BattleArenaView extends Container
+export class BattleArenaView extends Object3D
 {
 	// empty
 }

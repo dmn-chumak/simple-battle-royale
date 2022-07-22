@@ -1,5 +1,8 @@
 import { Ticker } from "pixi.js";
 import { Renderer } from "pixi.js";
+import { PCFSoftShadowMap } from "three";
+import { sRGBEncoding } from "three";
+import { ACESFilmicToneMapping } from "three";
 import { Camera } from "three";
 import { WebGLRenderer } from "three";
 import { PerspectiveCamera } from "three";
@@ -32,9 +35,17 @@ export class ClientApplication
 
 		this._resourceManager = new ResourceManager();
 
-		this._threeRenderer = new WebGLRenderer({ context, canvas });
+		this._threeRenderer = new WebGLRenderer({ context, canvas, logarithmicDepthBuffer: true });
 		this._threeScene = new Scene();
 		this._threeCamera = new PerspectiveCamera(45, this.aspectRatio, 0.1, 1000);
+
+		this._threeRenderer.physicallyCorrectLights = true;
+		this._threeRenderer.shadowMap.autoUpdate = true;
+		this._threeRenderer.shadowMap.type = PCFSoftShadowMap;
+		this._threeRenderer.shadowMap.enabled = true;
+		this._threeRenderer.toneMapping = ACESFilmicToneMapping;
+		this._threeRenderer.toneMappingExposure = 1.0;
+		this._threeRenderer.outputEncoding = sRGBEncoding;
 
 		this._pixiRenderer = new Renderer({ context, view: canvas });
 		this._pixiSceneManager = new SceneManager(this);

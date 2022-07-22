@@ -11,8 +11,8 @@ export class UpdateWorldCommand extends ClientCommand<UpdateWorldMessage>
 		{
 			const player = this._scene.playersMap[playerIndex];
 			const playerState = playersMap[playerIndex];
-			player.x = playerState.x;
-			player.y = playerState.y;
+			player.position.x = playerState.x;
+			player.position.z = playerState.y;
 		}
 	}
 }

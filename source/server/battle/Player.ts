@@ -2,7 +2,6 @@ import { b2BodyType } from "@box2d/core";
 import { b2CircleShape } from "@box2d/core";
 import { b2Body } from "@box2d/core";
 import { PlayerState } from "../../common/data_types/PlayerState";
-import { PIXELS_IN_METER } from "../../common/GameConfig";
 import { PLAYER_RADIUS } from "../../common/GameConfig";
 import { BattleArena } from "./BattleArena";
 
@@ -60,8 +59,8 @@ export class Player
 
 		return {
 			color: this._color,
-			x: position.x * PIXELS_IN_METER,
-			y: position.y * PIXELS_IN_METER
+			x: position.x,
+			y: position.y
 		};
 	}
 

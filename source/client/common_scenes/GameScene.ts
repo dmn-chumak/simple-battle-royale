@@ -1,11 +1,16 @@
+import { Euler } from "three";
+import { Vector3 } from "three";
+import { AmbientLight } from "three";
 import { CommandMessageDecoder } from "../../common/CommandMessageDecoder";
 import { PlayerState } from "../../common/data_types/PlayerState";
+import { PLAYER_RADIUS } from "../../common/GameConfig";
 import { BattleArenaView } from "../battle/BattleArenaView";
 import { MovablePlayerView } from "../battle/MovablePlayerView";
 import { PlayerView } from "../battle/PlayerView";
 import { PlayerViewMap } from "../battle/PlayerViewMap";
 import { SceneManager } from "../SceneManager";
 import { COMMAND_FACTORY } from "../types/ClientCommandFactory";
+import { SceneUtils } from "../utils/SceneUtils";
 import { Scene } from "./Scene";
 
 export class GameScene extends Scene
@@ -19,8 +24,6 @@ export class GameScene extends Scene
 		super();
 
 		this._battleArena = new BattleArenaView();
-		this.addChild(this._battleArena);
-
 		this._playersMap = {};
 		this._player = null;
 	}
@@ -29,7 +32,17 @@ export class GameScene extends Scene
 	{
 		super.start(manager);
 
-		manager.application.socket.onmessage = (event) =>
+		const { threeScene, threeCamera, socket } = manager.application;
+
+		threeScene.add(this._battleArena);
+		threeScene.add(SceneUtils.createPlane(0xCCCCCC, new Vector3(0, -PLAYER_RADIUS, 0), new Euler(-Math.PI / 2, 0, 0, "XYZ")));
+		threeScene.add(new AmbientLight(0xFFFFFF, 0.35));
+		threeScene.add(SceneUtils.createLight(0xFFFFFF, new Vector3(0, 5, 0)));
+
+		threeCamera.position.set(0, 15, 0);
+		threeCamera.lookAt(0, 0, 0);
+
+		socket.onmessage = (event) =>
 		{
 			const message = CommandMessageDecoder.decode(event.data);
 			const commandType = COMMAND_FACTORY[message.type];
@@ -47,18 +60,25 @@ export class GameScene extends Scene
 		}
 	}
 
+	public override stop(): void
+	{
+		this._battleArena.removeFromParent();
+
+		super.stop();
+	}
+
 	public appendPlayer(player: PlayerView, index: number, state: PlayerState): void
 	{
-		this._battleArena.addChild(player);
+		this._battleArena.add(player);
 		this._playersMap[index] = player;
 
-		player.x = state.x;
-		player.y = state.y;
+		player.position.x = state.x;
+		player.position.z = state.y;
 	}
 
 	public removePlayer(player: PlayerView, index: number): void
 	{
-		this._battleArena.removeChild(player);
+		this._battleArena.remove(player);
 		delete this._playersMap[index];
 	}
 

@@ -1,18 +1,18 @@
-import { Graphics } from "pixi.js";
-import { Container } from "pixi.js";
-import { PIXELS_IN_METER } from "../../common/GameConfig";
+import { MeshStandardMaterial } from "three";
+import { SphereGeometry } from "three";
+import { Mesh } from "three";
+import { Object3D } from "three";
 import { PLAYER_RADIUS } from "../../common/GameConfig";
 
-export class PlayerView extends Container
+export class PlayerView extends Object3D
 {
 	public constructor(color: number)
 	{
 		super();
 
-		const circle = new Graphics();
-		circle.beginFill(color);
-		circle.drawCircle(0, 0, PLAYER_RADIUS * PIXELS_IN_METER);
-		circle.endFill();
-		this.addChild(circle);
+		const circle = new Mesh(new SphereGeometry(PLAYER_RADIUS), new MeshStandardMaterial({ color }));
+		circle.castShadow = true;
+		circle.receiveShadow = true;
+		this.add(circle);
 	}
 }
