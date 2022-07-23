@@ -1,3 +1,4 @@
+import { Sprite } from "pixi.js";
 import { Euler } from "three";
 import { Vector3 } from "three";
 import { AmbientLight } from "three";
@@ -32,12 +33,24 @@ export class GameScene extends Scene
 	{
 		super.start(manager);
 
-		const { threeScene, threeCamera, socket } = manager.application;
+		const { resourceManager, threeScene, threeCamera, socket } = manager.application;
 
 		threeScene.add(this._battleArena);
 		threeScene.add(SceneUtils.createPlane(0xCCCCCC, new Vector3(0, -PLAYER_RADIUS, 0), new Euler(-Math.PI / 2, 0, 0, "XYZ")));
 		threeScene.add(new AmbientLight(0xFFFFFF, 0.35));
 		threeScene.add(SceneUtils.createLight(0xFFFFFF, new Vector3(0, 5, 0)));
+
+		{
+			// examples of using resources, loaded from resource manager
+
+			threeScene.add(resourceManager.obtainThreeModel("model"));
+			this.addChild(Sprite.from("sprite"));
+
+			document.body.onclick = () =>
+			{
+				resourceManager.obtainSound("sound").play();
+			};
+		}
 
 		threeCamera.position.set(0, 15, 0);
 		threeCamera.lookAt(0, 0, 0);
