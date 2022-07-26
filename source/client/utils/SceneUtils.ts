@@ -24,8 +24,8 @@ export class SceneUtils
 		const light = new PointLight(color);
 
 		light.position.copy(position);
-		light.shadow.mapSize.width = 2048;
-		light.shadow.mapSize.height = 2048;
+		light.shadow.mapSize.width = 1024;
+		light.shadow.mapSize.height = 1024;
 		light.castShadow = true;
 
 		return light;

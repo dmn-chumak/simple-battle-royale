@@ -29,3 +29,9 @@ npm run build # or npm run client | npm run server
 ```bash
 npm run start
 ```
+
+- Open page in browser:
+
+```text
+http://localhost:5000
+```
