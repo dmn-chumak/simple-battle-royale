@@ -1,4 +1,3 @@
-import { ChangeDirectionMessage } from "../../common/client_messages/ChangeDirectionMessage";
+import { PlayerMovementMessage } from "../../common/client_messages/PlayerMovementMessage";
 
-export type ClientOutcomeMessageType =
-	ChangeDirectionMessage;
+export type ClientOutcomeMessageType = PlayerMovementMessage;
