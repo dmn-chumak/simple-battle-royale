@@ -7,14 +7,22 @@ import { BattleArena } from "./BattleArena";
 
 export class Player
 {
+	public static readonly DEFAULT_MAX_HEALTH: number = 100;
+
 	private readonly _color: number;
 
 	private _battleArena: BattleArena;
 	private _body: b2Body;
 
+	private _currHP: number;
+	private _maxHP: number;
+
 	public constructor()
 	{
 		this._color = 0xFFFFFF * Math.random();
+
+		this._currHP = Player.DEFAULT_MAX_HEALTH;
+		this._maxHP = Player.DEFAULT_MAX_HEALTH;
 	}
 
 	public enterBattleArena(battleArena: BattleArena): void
@@ -60,8 +68,29 @@ export class Player
 		return {
 			color: this._color,
 			x: position.x,
-			y: position.y
+			y: position.y,
+
+			currHP: this._currHP,
+			maxHP: this._maxHP,
+
+			isAlive: this.isAlive
 		};
+	}
+
+	/** Function for increasing/decreasing HP
+	 * @param delta delta > 0 for healing, delta < 0 for damage
+	 */
+	public changeHP(delta: number): void
+	{
+		this._currHP += delta;
+		if (this._currHP > this._maxHP)
+		{
+			this._currHP = this._maxHP;
+		}
+		if (this._currHP < 0)
+		{
+			this._currHP = 0;
+		}
 	}
 
 	public get color(): number
@@ -72,5 +101,20 @@ export class Player
 	public get body(): b2Body
 	{
 		return this._body;
+	}
+
+	public get currHP(): number
+	{
+		return this._currHP;
+	}
+
+	public get maxHP(): number
+	{
+		return this._maxHP;
+	}
+
+	public get isAlive(): boolean
+	{
+		return this._currHP <= 0;
 	}
 }
