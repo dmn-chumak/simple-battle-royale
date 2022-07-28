@@ -8,6 +8,7 @@ import { Camera } from "three";
 import { WebGLRenderer } from "three";
 import { PerspectiveCamera } from "three";
 import { Scene } from "three";
+
 import { ClientOutcomeMessageType } from "../common/ClientOutcomeMessageType";
 import { CommandMessageEncoder } from "../common/CommandMessageEncoder";
 import { LoaderScene } from "./common_scenes/LoaderScene";
@@ -31,16 +32,14 @@ export class ClientApplication
 	public constructor()
 	{
 		const canvas = document.createElement("canvas");
-		const context = canvas.getContext("webgl2", { depth: true, antialias: true, stencil: true });
+		const context = canvas.getContext("webgl2", {depth: true, antialias: true, stencil: true});
 		document.body.appendChild(canvas);
 
 		this._resourceManager = new ResourceManager();
 
-		this._threeRenderer = new WebGLRenderer({ context, canvas, logarithmicDepthBuffer: true });
+		this._threeRenderer = new WebGLRenderer({context, canvas, logarithmicDepthBuffer: true});
 		this._threeScene = new Scene();
-		this._threeCamera = new PerspectiveCamera(45, this.aspectRatio, 0.1, 1000);
-
-		this._threeScene.add(this._threeCamera);
+		this._threeCamera = new PerspectiveCamera(75, this.aspectRatio, 0.1, 1000);
 
 		this._threeScene.fog = new Fog(0x000000, 0, 500);
 
@@ -53,7 +52,7 @@ export class ClientApplication
 		this._threeRenderer.outputEncoding = sRGBEncoding;
 		this._threeRenderer.setClearColor(this._threeScene.fog.color);
 
-		this._pixiRenderer = new Renderer({ context, view: canvas });
+		this._pixiRenderer = new Renderer({context, view: canvas});
 		this._pixiSceneManager = new SceneManager(this);
 		this._pixiSceneManager.changeScene(new LoaderScene());
 
@@ -65,7 +64,8 @@ export class ClientApplication
 		this._pixiTicker.start();
 	}
 
-	private updateApplication = (delta: number) => {
+	private updateApplication = (delta: number) =>
+	{
 		this._pixiSceneManager.updateScene(delta);
 
 		this._threeRenderer.clear(true, true, true);
@@ -73,11 +73,12 @@ export class ClientApplication
 		this._threeRenderer.render(this._threeScene, this._threeCamera);
 
 		this._pixiRenderer.reset();
-		this._pixiRenderer.render(this._pixiSceneManager, { clear: false });
+		this._pixiRenderer.render(this._pixiSceneManager, {clear: false});
 	};
 
-	private resizeApplication = () => {
-		const { innerWidth, innerHeight } = window;
+	private resizeApplication = () =>
+	{
+		const {innerWidth, innerHeight} = window;
 
 		this._threeCamera.aspect = this.aspectRatio;
 		this._threeCamera.updateProjectionMatrix();
