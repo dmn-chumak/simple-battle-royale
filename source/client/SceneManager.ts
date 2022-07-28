@@ -30,6 +30,7 @@ export class SceneManager extends Container
 		{
 			this.addChild(this._scene);
 			this._scene.start(this);
+			this._scene.resize();
 		}
 	}
 
