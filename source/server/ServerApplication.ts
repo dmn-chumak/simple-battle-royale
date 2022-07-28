@@ -6,11 +6,11 @@ import { CommandMessageEncoder } from "../common/CommandMessageEncoder";
 import { CommandType } from "../common/CommandType";
 import { SERVER_FRAME_RATE } from "../common/GameConfig";
 import { SERVER_PORT } from "../common/GameConfig";
+import { ServerOutcomeMessageType } from "../common/ServerOutcomeMessageType";
 import { BattleArena } from "./battle/BattleArena";
 import { ServerClient } from "./ServerClient";
 import { AVAILABLE_RECIPES } from "./types/AvailableResipes";
 import { COMMAND_FACTORY } from "./types/ServerCommandFactory";
-import { ServerOutcomeMessageType } from "./types/ServerOutcomeMessageType";
 
 export class ServerApplication
 {

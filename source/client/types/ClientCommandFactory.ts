@@ -1,7 +1,7 @@
 import { Command } from "../../common/Command";
 import { CommandMessage } from "../../common/CommandMessage";
 import { CommandType } from "../../common/CommandType";
-import { ServerOutcomeMessageType } from "../../server/types/ServerOutcomeMessageType";
+import { ServerOutcomeMessageType } from "../../common/ServerOutcomeMessageType";
 import { AppendPlayerCommand } from "../commands/AppendPlayerCommand";
 import { InitializeWorldCommand } from "../commands/InitializeWorldCommand";
 import { RemovePlayerCommand } from "../commands/RemovePlayerCommand";
@@ -17,5 +17,5 @@ export const COMMAND_FACTORY: ClientCommandFactory = {
 	[CommandType.SV_APPEND_PLAYER]: AppendPlayerCommand,
 	[CommandType.SV_INITIALIZE_WORLD]: InitializeWorldCommand,
 	[CommandType.SV_REMOVE_PLAYER]: RemovePlayerCommand,
-	[CommandType.SV_UPDATE_WORLD]: UpdateWorldCommand
+	[CommandType.SV_UPDATE_WORLD]: UpdateWorldCommand,
 };

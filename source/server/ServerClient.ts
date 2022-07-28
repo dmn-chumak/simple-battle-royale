@@ -1,9 +1,9 @@
 import { WebSocket } from "ws";
-import { ClientOutcomeMessageType } from "../client/types/ClientOutcomeMessageType";
 import { Command } from "../common/Command";
 import { CommandMessageEncoder } from "../common/CommandMessageEncoder";
 import { Player } from "./battle/Player";
-import { ServerOutcomeMessageType } from "./types/ServerOutcomeMessageType";
+import { ServerOutcomeMessageType } from "../common/ServerOutcomeMessageType";
+import { ClientOutcomeMessageType } from "../common/ClientOutcomeMessageType";
 
 export class ServerClient
 {

@@ -1,4 +1,4 @@
-import { ClientOutcomeMessageType } from "../../client/types/ClientOutcomeMessageType";
+import { ClientOutcomeMessageType } from "../../common/ClientOutcomeMessageType";
 import { Command } from "../../common/Command";
 import { CommandMessage } from "../../common/CommandMessage";
 import { CommandType } from "../../common/CommandType";
