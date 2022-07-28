@@ -8,7 +8,7 @@ export class ChangeDirectionCommand extends ServerCommand<ChangeDirectionMessage
 	{
 		const {deltaX, deltaY} = this._message.data;
 
-		//this._client.player.body.velocity.x += deltaX * PLAYER_SPEED;
-		//this._client.player.body.velocity.y += deltaY * PLAYER_SPEED;
+		this._client.player.body.velocity.x += deltaX * PLAYER_SPEED;
+		this._client.player.body.velocity.z += deltaY * PLAYER_SPEED;
 	}
 }

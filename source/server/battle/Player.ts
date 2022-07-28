@@ -26,7 +26,7 @@ export class Player
 			position: new Vec3(
 				//1 + 5 * Math.random(),
 				0,
-				15,
+				1,
 				0
 			),
 			allowSleep: false,

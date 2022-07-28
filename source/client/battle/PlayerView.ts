@@ -1,4 +1,4 @@
-import { MeshStandardMaterial } from "three";
+import { MeshLambertMaterial } from "three";
 import { SphereGeometry } from "three";
 import { Mesh } from "three";
 import { Object3D } from "three";
@@ -10,7 +10,7 @@ export class PlayerView extends Object3D
 	{
 		super();
 
-		const circle = new Mesh(new SphereGeometry(PLAYER_RADIUS), new MeshStandardMaterial({ color }));
+		const circle = new Mesh(new SphereGeometry(PLAYER_RADIUS), new MeshLambertMaterial({color}));
 		circle.castShadow = true;
 		circle.receiveShadow = true;
 		this.add(circle);

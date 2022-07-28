@@ -1,5 +1,3 @@
-import { Sprite } from "pixi.js";
-import { Euler } from "three";
 import { Vector3 } from "three";
 import { AmbientLight } from "three";
 import { CommandMessageDecoder } from "../../common/CommandMessageDecoder";
@@ -35,23 +33,23 @@ export class GameScene extends Scene
 		const {resourceManager, threeScene, threeCamera, socket} = manager.application;
 
 		threeScene.add(this._battleArena);
-		threeScene.add(SceneUtils.createPlane(0xCCCCCC, new Vector3(0, -0.5, 0), new Euler(-Math.PI / 2, 0, 0, "XYZ")));
-		threeScene.add(new AmbientLight(0xFFFFFF, 0.35));
-		threeScene.add(SceneUtils.createLight(0xFFFFFF, new Vector3(0, 5, 0)));
+		threeScene.add(SceneUtils.createFloor());
+		threeScene.add(new AmbientLight(0xFFFFFF, 0.1));
+		threeScene.add(SceneUtils.createSpotlight(0xFFFFFF, new Vector3(2, 5, 2), new Vector3(0, 0, 0)));
 
-		{
-			// examples of using resources, loaded from resource manager
+//		{
+//			// examples of using resources, loaded from resource manager
+//
+//			threeScene.add(resourceManager.obtainThreeModel("model"));
+//			this.addChild(Sprite.from("sprite"));
+//
+//			document.body.onclick = () =>
+//			{
+//				resourceManager.obtainSound("sound").play();
+//			};
+//		}
 
-			threeScene.add(resourceManager.obtainThreeModel("model"));
-			this.addChild(Sprite.from("sprite"));
-
-			document.body.onclick = () =>
-			{
-				resourceManager.obtainSound("sound").play();
-			};
-		}
-
-		threeCamera.position.set(0, 15, 0);
+		threeCamera.position.set(0, 5, 0);
 		threeCamera.lookAt(0, 0, 0);
 
 		socket.onmessage = (event) =>
