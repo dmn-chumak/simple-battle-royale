@@ -1,16 +1,15 @@
-import { b2BodyType } from "@box2d/core";
-import { b2CircleShape } from "@box2d/core";
-import { b2Body } from "@box2d/core";
+import { Body, Sphere, Vec3 } from 'cannon-es';
+
 import { PlayerState } from "../../common/data_types/PlayerState";
 import { PLAYER_RADIUS } from "../../common/GameConfig";
 import { BattleArena } from "./BattleArena";
 
 export class Player
 {
-	private readonly _color: number;
+	protected readonly _color: number;
 
-	private _battleArena: BattleArena;
-	private _body: b2Body;
+	protected _battleArena: BattleArena;
+	protected _body3D: Body;
 
 	public constructor()
 	{
@@ -21,31 +20,33 @@ export class Player
 	{
 		this._battleArena = battleArena;
 
-		this._body = battleArena.createBody(
-			b2BodyType.b2_dynamicBody,
-			{
-				shape: new b2CircleShape(PLAYER_RADIUS),
-				friction: 0.75,
-				density: 3
-			},
-			{
-				x: 1 + 5 * Math.random(),
-				y: 1 + 5 * Math.random()
-			}
-		);
+		this._body3D = new Body({
+			mass: 50, //kg
+			shape: new Sphere(PLAYER_RADIUS),
+			position: new Vec3(
+				//1 + 5 * Math.random(),
+				0,
+				15,
+				0
+			),
+			allowSleep: false,
+			linearDamping: 0.9,
+		});
+
+		this._battleArena.addPlayer(this._body3D);
 	}
 
 	public leaveBattleArena(): void
 	{
-		this._battleArena.removeBody(this._body);
+		this._battleArena.removePlayer(this._body3D);
 		this._battleArena = null;
 
-		this._body = null;
+		this._body3D = null;
 	}
 
 	public beforeUpdateFrame(): void
 	{
-		this._body.SetLinearVelocity({ x: 0, y: 0 });
+		//this._body.SetLinearVelocity({ x: 0, y: 0 });
 	}
 
 	public updateFrame(): void
@@ -55,12 +56,13 @@ export class Player
 
 	public getCurrentState(): PlayerState
 	{
-		const position = this._body.GetPosition();
+		const position = this._body3D.position;
 
 		return {
 			color: this._color,
 			x: position.x,
-			y: position.y
+			y: position.y,
+			z: position.z,
 		};
 	}
 
@@ -69,8 +71,8 @@ export class Player
 		return this._color;
 	}
 
-	public get body(): b2Body
+	public get body(): Body
 	{
-		return this._body;
+		return this._body3D;
 	}
 }

@@ -6,11 +6,9 @@ export class ChangeDirectionCommand extends ServerCommand<ChangeDirectionMessage
 {
 	public override execute(): void
 	{
-		const { deltaX, deltaY } = this._message.data;
+		const {deltaX, deltaY} = this._message.data;
 
-		this._client.player.body.SetLinearVelocity({
-			x: deltaX * PLAYER_SPEED,
-			y: deltaY * PLAYER_SPEED
-		});
+		//this._client.player.body.velocity.x += deltaX * PLAYER_SPEED;
+		//this._client.player.body.velocity.y += deltaY * PLAYER_SPEED;
 	}
 }

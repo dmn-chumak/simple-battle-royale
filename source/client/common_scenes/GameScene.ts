@@ -4,7 +4,6 @@ import { Vector3 } from "three";
 import { AmbientLight } from "three";
 import { CommandMessageDecoder } from "../../common/CommandMessageDecoder";
 import { PlayerState } from "../../common/data_types/PlayerState";
-import { PLAYER_RADIUS } from "../../common/GameConfig";
 import { BattleArenaView } from "../battle/BattleArenaView";
 import { MovablePlayerView } from "../battle/MovablePlayerView";
 import { PlayerView } from "../battle/PlayerView";
@@ -33,10 +32,10 @@ export class GameScene extends Scene
 	{
 		super.start(manager);
 
-		const { resourceManager, threeScene, threeCamera, socket } = manager.application;
+		const {resourceManager, threeScene, threeCamera, socket} = manager.application;
 
 		threeScene.add(this._battleArena);
-		threeScene.add(SceneUtils.createPlane(0xCCCCCC, new Vector3(0, -PLAYER_RADIUS, 0), new Euler(-Math.PI / 2, 0, 0, "XYZ")));
+		threeScene.add(SceneUtils.createPlane(0xCCCCCC, new Vector3(0, -0.5, 0), new Euler(-Math.PI / 2, 0, 0, "XYZ")));
 		threeScene.add(new AmbientLight(0xFFFFFF, 0.35));
 		threeScene.add(SceneUtils.createLight(0xFFFFFF, new Vector3(0, 5, 0)));
 
@@ -86,7 +85,8 @@ export class GameScene extends Scene
 		this._playersMap[index] = player;
 
 		player.position.x = state.x;
-		player.position.z = state.y;
+		player.position.y = state.y;
+		player.position.z = state.z;
 	}
 
 	public removePlayer(player: PlayerView, index: number): void
