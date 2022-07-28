@@ -1,5 +1,4 @@
-import { b2Vec2 } from "@box2d/core";
-import { Body, ContactMaterial, GSSolver, Material, Plane, SplitSolver, World } from "cannon-es";
+import { Body, ContactMaterial, GSSolver, Material, Plane, SplitSolver, World, Vec3 } from "cannon-es";
 import { PlayerStateMap } from "../../common/data_types/PlayerStateMap";
 import { WeaponType } from "../../common/data_types/WeaponType";
 import { PLAYER_RADIUS } from "../../common/GameConfig";
@@ -102,9 +101,9 @@ export class BattleArena
 	{
 		// TODO: there is no direction of player yet, register damage by all range area around the player
 		// TODO: implement weapon cool down
-		const playerPos = player.body.position;
+		const playerPos: Vec3 = player.body.position;
 		this._application.clients.forEach((client => {
-			const clientPos: Readonly<b2Vec2> = client.player.body.GetPosition();
+			const clientPos: Vec3 = client.player.body.position;
 			if (clientPos.x === playerPos.x && clientPos.y === playerPos.y && clientPos.z === playerPos.z)
 			{
 				// Skip current player
