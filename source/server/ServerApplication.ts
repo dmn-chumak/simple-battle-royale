@@ -8,6 +8,7 @@ import { SERVER_FRAME_RATE } from "../common/GameConfig";
 import { SERVER_PORT } from "../common/GameConfig";
 import { BattleArena } from "./battle/BattleArena";
 import { ServerClient } from "./ServerClient";
+import { AVAILABLE_RECIPES } from "./types/AvailableResipes";
 import { COMMAND_FACTORY } from "./types/ServerCommandFactory";
 import { ServerOutcomeMessageType } from "./types/ServerOutcomeMessageType";
 
@@ -72,6 +73,7 @@ export class ServerApplication
 			data: {
 				state: client.player.getCurrentState(),
 				playersMap: this._battleArena.getCurrentStateMap(),
+				recipes: AVAILABLE_RECIPES,
 				index: client.index
 			}
 		});
