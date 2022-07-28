@@ -1,7 +1,6 @@
-import { Camera } from "three";
 import { Vector3 } from "three";
 import { AmbientLight } from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+
 import { CommandMessageDecoder } from "../../common/CommandMessageDecoder";
 import { CommandType } from "../../common/CommandType";
 import { PlayerState } from "../../common/data_types/PlayerState";
@@ -9,6 +8,7 @@ import { BattleArenaView } from "../battle/BattleArenaView";
 import { MovablePlayerView } from "../battle/MovablePlayerView";
 import { PlayerView } from "../battle/PlayerView";
 import { PlayerViewMap } from "../battle/PlayerViewMap";
+import { Camera3rdPerson } from "../Camera3rdPerson";
 import { HealthPanelView } from "../healthPanel/HealthPanelView";
 import { SceneManager } from "../SceneManager";
 import { COMMAND_FACTORY } from "../types/ClientCommandFactory";
@@ -21,8 +21,7 @@ export class GameScene extends Scene
 	private readonly _battleArena: BattleArenaView;
 	private _player: MovablePlayerView;
 	private _healthPanelView: HealthPanelView;
-	protected _camera: Camera;
-	protected _orbitController: OrbitControls;
+	protected _camera: Camera3rdPerson;
 
 	public constructor()
 	{
@@ -38,11 +37,12 @@ export class GameScene extends Scene
 	{
 		super.start(manager);
 
-		const { resourceManager, threeScene, threeCamera, socket } = manager.application;
+		const {resourceManager, threeScene, threeCamera, socket} = manager.application;
 
-		this._camera = threeCamera;
-		this._orbitController = new OrbitControls(this._camera, manager.application.canvas);
-		this._orbitController.enableDamping = true;
+		this._camera = new Camera3rdPerson(threeCamera);
+		threeScene.add(this._camera.getObject());
+		//this._camera.lock();
+
 		threeScene.add(this._battleArena);
 
 		{
@@ -51,7 +51,13 @@ export class GameScene extends Scene
 			// threeScene.add(resourceManager.obtainThreeModel("model"));
 			// this.addChild(Sprite.from("sprite"));
 
-			document.body.onclick = () => {
+			document.body.onclick = () =>
+			{
+				if (!this._camera.isLocked)
+				{
+					this._camera.lock();
+					this._camera.enabled = true;
+				}
 				//resourceManager.obtainSound("sound").play();
 				this._manager.application.sendMessage({
 					type: CommandType.CL_ATTACK,
@@ -64,11 +70,12 @@ export class GameScene extends Scene
 		threeScene.add(new AmbientLight(0xFFFFFF, 0.1));
 		threeScene.add(SceneUtils.createSpotlight(0xFFFFFF, new Vector3(2, 5, 2), new Vector3(0, 0, 0)));
 
-		this._camera.position.set(0, 6, 18);
+		//this._camera.position.set(0, 6, 18);
 
 		this.addChild(this._healthPanelView);
 
-		socket.onmessage = (event) => {
+		socket.onmessage = (event) =>
+		{
 			const message = CommandMessageDecoder.decode(event.data);
 			const commandType = COMMAND_FACTORY[message.type];
 			const command = new commandType(message, this);
@@ -85,21 +92,17 @@ export class GameScene extends Scene
 		}
 	}
 
-
 	public updateCamera(): void
 	{
-		const relativeCameraOffset = new Vector3(0, 5, 10);
-
-		const cameraOffset = relativeCameraOffset.applyMatrix4(this._player.matrixWorld);
-
-		this._camera.position.x = cameraOffset.x;
-		this._camera.position.y = cameraOffset.y;
-		this._camera.position.z = cameraOffset.z;
-		this._orbitController.target = this._player.position;
+		if (this._camera.enabled)
+		{
+			this._camera.update();
+		}
 	}
 
 	public override stop(): void
 	{
+		this._camera.dispose();
 		this._battleArena.removeFromParent();
 
 		super.stop();
@@ -134,6 +137,7 @@ export class GameScene extends Scene
 	public set player(value: MovablePlayerView)
 	{
 		this._player = value;
+		this._camera.follow(this._player);
 	}
 
 	public get player(): MovablePlayerView
