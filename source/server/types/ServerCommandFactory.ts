@@ -2,8 +2,8 @@ import { ClientOutcomeMessageType } from "../../common/ClientOutcomeMessageType"
 import { Command } from "../../common/Command";
 import { CommandMessage } from "../../common/CommandMessage";
 import { CommandType } from "../../common/CommandType";
+import { PlayerMovementCommand } from "../commands/PlayerMovementCommand";
 import { AttackCommand } from "../commands/AttackCommand";
-import { ChangeDirectionCommand } from "../commands/ChangeDirectionCommand";
 import { ServerApplication } from "../ServerApplication";
 import { ServerClient } from "../ServerClient";
 
@@ -13,6 +13,6 @@ export interface ServerCommandFactory
 }
 
 export const COMMAND_FACTORY: ServerCommandFactory = {
-	[CommandType.CL_CHANGE_DIRECTION]: ChangeDirectionCommand,
+	[CommandType.CL_PLAYER_MOVEMENT]: PlayerMovementCommand,
 	[CommandType.CL_ATTACK]: AttackCommand
 };
