@@ -10,6 +10,7 @@ import { BattleArenaView } from "../battle/BattleArenaView";
 import { MovablePlayerView } from "../battle/MovablePlayerView";
 import { PlayerView } from "../battle/PlayerView";
 import { PlayerViewMap } from "../battle/PlayerViewMap";
+import { HealthPanelView } from "../healthPanel/HealthPanelView";
 import { SceneManager } from "../SceneManager";
 import { COMMAND_FACTORY } from "../types/ClientCommandFactory";
 import { SceneUtils } from "../utils/SceneUtils";
@@ -20,12 +21,14 @@ export class GameScene extends Scene
 	private readonly _playersMap: PlayerViewMap;
 	private readonly _battleArena: BattleArenaView;
 	private _player: MovablePlayerView;
+	private _healthPanelView: HealthPanelView
 
 	public constructor()
 	{
 		super();
 
 		this._battleArena = new BattleArenaView();
+		this._healthPanelView = new HealthPanelView();
 		this._playersMap = {};
 		this._player = null;
 	}
@@ -40,6 +43,7 @@ export class GameScene extends Scene
 		threeScene.add(SceneUtils.createPlane(0xCCCCCC, new Vector3(0, -PLAYER_RADIUS, 0), new Euler(-Math.PI / 2, 0, 0, "XYZ")));
 		threeScene.add(new AmbientLight(0xFFFFFF, 0.35));
 		threeScene.add(SceneUtils.createLight(0xFFFFFF, new Vector3(0, 5, 0)));
+		this.addChild(this._healthPanelView)
 
 		{
 			// examples of using resources, loaded from resource manager
@@ -116,5 +120,15 @@ export class GameScene extends Scene
 	public get player(): MovablePlayerView
 	{
 		return this._player;
+	}
+
+	public updateHealthValue(): void
+	{
+		this._healthPanelView.updateHealthText(this._player.maxHp, this._player.currHp);
+	}
+
+	public override resize(): void
+	{
+		this._healthPanelView.x = 500;
 	}
 }
