@@ -1,4 +1,5 @@
 const Path = require("path");
+const Webpack = require("webpack");
 
 const commonConfig = {
 	devtool: "cheap-module-source-map",
@@ -8,15 +9,6 @@ const commonConfig = {
 	},
 	optimization: {
 		usedExports: true
-	},
-	module: {
-		rules: [
-			{
-				test: /.ts(x?)$/,
-				exclude: /node_modules/,
-				use: "ts-loader"
-			}
-		]
 	}
 };
 
@@ -34,6 +26,14 @@ module.exports = function (env, argv) {
 			output: {
 				filename: "client.js",
 				path: Path.resolve(__dirname, "resource")
+			},
+			module: {
+				rules: [
+					{
+						test: /.ts(x?)$/,
+						use: "ts-loader?configFile=tsconfig.webpack.client.json"
+					}
+				]
 			}
 		});
 	}
@@ -46,6 +46,14 @@ module.exports = function (env, argv) {
 			output: {
 				filename: "server.js",
 				path: Path.resolve(__dirname, "output")
+			},
+			module: {
+				rules: [
+					{
+						test: /.ts(x?)$/,
+						use: "ts-loader?configFile=tsconfig.webpack.server.json"
+					}
+				]
 			}
 		});
 	}
