@@ -3,6 +3,7 @@ import { Euler } from "three";
 import { Vector3 } from "three";
 import { AmbientLight } from "three";
 import { CommandMessageDecoder } from "../../common/CommandMessageDecoder";
+import { CommandType } from "../../common/CommandType";
 import { PlayerState } from "../../common/data_types/PlayerState";
 import { PLAYER_RADIUS } from "../../common/GameConfig";
 import { BattleArenaView } from "../battle/BattleArenaView";
@@ -46,17 +47,19 @@ export class GameScene extends Scene
 			threeScene.add(resourceManager.obtainThreeModel("model"));
 			this.addChild(Sprite.from("sprite"));
 
-			document.body.onclick = () =>
-			{
-				resourceManager.obtainSound("sound").play();
+			document.body.onclick = () => {
+				//resourceManager.obtainSound("sound").play();
+				this._manager.application.sendMessage({
+					type: CommandType.CL_ATTACK,
+					data: {}
+				});
 			};
 		}
 
 		threeCamera.position.set(0, 15, 0);
 		threeCamera.lookAt(0, 0, 0);
 
-		socket.onmessage = (event) =>
-		{
+		socket.onmessage = (event) => {
 			const message = CommandMessageDecoder.decode(event.data);
 			const commandType = COMMAND_FACTORY[message.type];
 			const command = new commandType(message, this);

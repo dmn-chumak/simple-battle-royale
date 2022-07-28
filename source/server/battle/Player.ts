@@ -2,6 +2,8 @@ import { b2BodyType } from "@box2d/core";
 import { b2CircleShape } from "@box2d/core";
 import { b2Body } from "@box2d/core";
 import { PlayerState } from "../../common/data_types/PlayerState";
+import { Weapon } from "../../common/data_types/Weapon";
+import { WeaponType } from "../../common/data_types/WeaponType";
 import { PLAYER_RADIUS } from "../../common/GameConfig";
 import { BattleArena } from "./BattleArena";
 
@@ -17,12 +19,23 @@ export class Player
 	private _currHP: number;
 	private _maxHP: number;
 
+	private readonly _fist: Weapon;
+	private _currWeapon: Weapon;
+
 	public constructor()
 	{
 		this._color = 0xFFFFFF * Math.random();
 
 		this._currHP = Player.DEFAULT_MAX_HEALTH;
 		this._maxHP = Player.DEFAULT_MAX_HEALTH;
+
+		this._fist = {
+			attack: 3,
+			range: PLAYER_RADIUS + 0.15,
+			type: WeaponType.MELEE,
+			coolDownSec: 2
+		};
+		this._currWeapon = this._fist;
 	}
 
 	public enterBattleArena(battleArena: BattleArena): void
@@ -72,8 +85,9 @@ export class Player
 
 			currHP: this._currHP,
 			maxHP: this._maxHP,
+			isAlive: this.isAlive,
 
-			isAlive: this.isAlive
+			currWeapon: this._currWeapon
 		};
 	}
 
@@ -91,6 +105,11 @@ export class Player
 		{
 			this._currHP = 0;
 		}
+	}
+
+	public attack(): void
+	{
+		this._battleArena.playerAttacked(this);
 	}
 
 	public get color(): number
@@ -116,5 +135,10 @@ export class Player
 	public get isAlive(): boolean
 	{
 		return this._currHP <= 0;
+	}
+
+	public get currWeapon(): Weapon
+	{
+		return this._currWeapon;
 	}
 }

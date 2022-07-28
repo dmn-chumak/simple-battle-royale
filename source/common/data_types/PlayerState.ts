@@ -1,3 +1,5 @@
+import { Weapon } from "./Weapon";
+
 export interface PlayerState
 {
 	color: number;
@@ -6,6 +8,7 @@ export interface PlayerState
 
 	currHP: number;
 	maxHP: number;
-
 	isAlive: boolean;
+
+	currWeapon: Weapon;
 }
