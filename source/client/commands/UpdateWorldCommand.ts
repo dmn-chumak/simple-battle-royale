@@ -21,6 +21,7 @@ export class UpdateWorldCommand extends ClientCommand<UpdateWorldMessage>
 		}
 
 		this._scene.updateHealthValue();
+		this._scene.updateCamera();
 	}
 
 	private updateHpState(playerState: PlayerState, player: PlayerView): void
