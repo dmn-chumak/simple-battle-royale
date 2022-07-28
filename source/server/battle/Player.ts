@@ -17,6 +17,7 @@ export class Player
 
 	protected _currHP: number;
 	protected _maxHP: number;
+	protected _isDead: boolean;
 
 	protected readonly _fist: Weapon;
 	protected _currWeapon: Weapon;
@@ -27,6 +28,7 @@ export class Player
 
 		this._currHP = Player.DEFAULT_MAX_HEALTH;
 		this._maxHP = Player.DEFAULT_MAX_HEALTH;
+		this._isDead = false;
 
 		this._fist = {
 			attack: 3,
@@ -98,19 +100,29 @@ export class Player
 	 */
 	public changeHP(delta: number): void
 	{
+		if (this._isDead)
+		{
+			return;
+		}
+
 		this._currHP += delta;
 		if (this._currHP > this._maxHP)
 		{
 			this._currHP = this._maxHP;
 		}
-		if (this._currHP < 0)
+		if (this._currHP <= 0)
 		{
+			this._isDead = true;
 			this._currHP = 0;
 		}
 	}
 
 	public attack(): void
 	{
+		if (this._isDead)
+		{
+			return;
+		}
 		this._battleArena.playerAttacked(this);
 	}
 
@@ -136,7 +148,7 @@ export class Player
 
 	public get isAlive(): boolean
 	{
-		return this._currHP <= 0;
+		return !this._isDead;
 	}
 
 	public get currWeapon(): Weapon
