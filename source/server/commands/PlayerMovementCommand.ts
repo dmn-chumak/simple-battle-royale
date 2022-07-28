@@ -7,7 +7,12 @@ export class PlayerMovementCommand extends ServerCommand<PlayerMovementMessage>
 {
 	public override execute()
 	{
-		const {moveForward, moveBackward, moveLeft, moveRight, jump} = this._message.data;
+		if (!this._client.player.isAlive)
+		{
+			return;
+		}
+
+		const { moveForward, moveBackward, moveLeft, moveRight, jump } = this._message.data;
 
 		if (moveRight)
 		{
