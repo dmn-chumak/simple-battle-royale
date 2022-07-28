@@ -1,3 +1,5 @@
+import { PlayerMovementMessageData } from "../../common/client_messages/PlayerMovementMessage";
+import { PlayerMovementMessage } from "../../common/client_messages/PlayerMovementMessage";
 import { CommandType } from "../../common/CommandType";
 import { ClientApplication } from "../ClientApplication";
 import { PlayerView } from "./PlayerView";
@@ -32,33 +34,43 @@ export class MovablePlayerView extends PlayerView
 
 	public update(): void
 	{
-		let deltaX = 0, deltaY = 0;
+		const movementData: PlayerMovementMessageData = {
+			moveForward: false,
+			moveBackward: false,
+			moveLeft: false,
+			moveRight: false,
+			jump: false,
+		};
 
 		if (this._keysMap["ArrowLeft"] || this._keysMap["KeyA"])
 		{
-			deltaX = -1;
+			movementData.moveLeft = true;
 		}
 
 		if (this._keysMap["ArrowRight"] || this._keysMap["KeyD"])
 		{
-			deltaX = 1;
+			movementData.moveRight = true;
 		}
 
 		if (this._keysMap["ArrowUp"] || this._keysMap["KeyW"])
 		{
-			deltaY = -1;
+			movementData.moveForward = true;
 		}
 
 		if (this._keysMap["ArrowDown"] || this._keysMap["KeyS"])
 		{
-			deltaY = 1;
+			movementData.moveBackward = true;
 		}
 
-		this._application.sendMessage({
-			type: CommandType.CL_CHANGE_DIRECTION,
-			data: {
-				deltaX, deltaY
-			}
-		});
+		if (this._keysMap["Space"])
+		{
+			movementData.jump = true;
+		}
+
+		const message: PlayerMovementMessage = {
+			type: CommandType.CL_PLAYER_MOVEMENT,
+			data: movementData
+		};
+		this._application.sendMessage(message);
 	}
 }
