@@ -1,44 +1,27 @@
-import { b2BodyType } from "@box2d/core";
-import { b2Body } from "@box2d/core";
-import { b2FixtureDef } from "@box2d/core";
-import { XY } from "@box2d/core";
-import { b2World } from "@box2d/core";
+import { Body, ContactMaterial, GSSolver, Material, Plane, SplitSolver, World } from 'cannon-es';
+
 import { PlayerStateMap } from "../../common/data_types/PlayerStateMap";
-import { SERVER_FRAME_RATE } from "../../common/GameConfig";
 import { ServerApplication } from "../ServerApplication";
 
 export class BattleArena
 {
-	private readonly _application: ServerApplication;
-	private readonly _world: b2World;
+	protected readonly _application: ServerApplication;
+	protected readonly _world: World;
+	protected _physicsMaterial: Material;
 
 	public constructor(application: ServerApplication)
 	{
 		this._application = application;
-		this._world = b2World.Create({
-			x: 0,
-			y: 0
-		});
+
+		this._world = new World();
+
+		this.initWorld();
+		this.initMap();
 	}
 
 	public updateFrame(): void
 	{
-		this._world.Step(SERVER_FRAME_RATE, { positionIterations: 5, velocityIterations: 3 });
-	}
-
-	public createBody(type: b2BodyType, fixture: b2FixtureDef, position: XY): b2Body
-	{
-		const body = this._world.CreateBody({ type, position });
-
-		body.SetSleepingAllowed(false);
-		body.CreateFixture(fixture);
-
-		return body;
-	}
-
-	public removeBody(body: b2Body): void
-	{
-		this._world.DestroyBody(body);
+		this._world.fixedStep();
 	}
 
 	public getCurrentStateMap(): PlayerStateMap
@@ -53,8 +36,49 @@ export class BattleArena
 		return players;
 	}
 
-	public get world(): b2World
+	public addPlayer(playerBody: Body): void
 	{
-		return this._world;
+		playerBody.material = this._physicsMaterial;
+		this._world.addBody(playerBody);
+	}
+
+	public removePlayer(playerBody: Body): void
+	{
+		this._world.removeBody(playerBody);
+	}
+
+	protected initWorld(): void
+	{
+		// Tweak contact properties.
+		// Contact stiffness - use to make softer/harder contacts
+		this._world.defaultContactMaterial.contactEquationStiffness = 1e9;
+		// Stabilization time in number of timesteps
+		this._world.defaultContactMaterial.contactEquationRelaxation = 4;
+
+		const solver = new GSSolver();
+		solver.iterations = 7;
+		solver.tolerance = 0.1;
+		this._world.solver = new SplitSolver(solver);
+
+		// gravity m/s²
+		this._world.gravity.set(0, -9.82, 0);
+
+		// Create a slippery material (friction coefficient = 0.0)
+		this._physicsMaterial = new Material('physics');
+		const physics_physics = new ContactMaterial(this._physicsMaterial, this._physicsMaterial, {
+			friction: 0.0,
+			restitution: 0.3,
+		});
+		this._world.addContactMaterial(physics_physics);
+	}
+
+	protected initMap(): void
+	{
+		// create ground plane
+		const groundShape = new Plane();
+		const groundBody = new Body({mass: 0, material: this._physicsMaterial});
+		groundBody.addShape(groundShape);
+		groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
+		this._world.addBody(groundBody);
 	}
 }
