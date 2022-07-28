@@ -7,6 +7,7 @@ export type PlayerMovementMessageData = {
 	moveLeft: boolean;
 	moveRight: boolean;
 	jump: boolean;
+
 }
 
 export interface PlayerMovementMessage extends CommandMessage

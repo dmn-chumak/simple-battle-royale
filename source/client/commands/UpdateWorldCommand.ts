@@ -7,7 +7,7 @@ export class UpdateWorldCommand extends ClientCommand<UpdateWorldMessage>
 {
 	public override execute(): void
 	{
-		const { playersMap } = this._message.data;
+		const {playersMap} = this._message.data;
 
 		for (const playerIndex in playersMap)
 		{
