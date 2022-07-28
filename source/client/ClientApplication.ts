@@ -8,11 +8,11 @@ import { Camera } from "three";
 import { WebGLRenderer } from "three";
 import { PerspectiveCamera } from "three";
 import { Scene } from "three";
+import { ClientOutcomeMessageType } from "../common/ClientOutcomeMessageType";
 import { CommandMessageEncoder } from "../common/CommandMessageEncoder";
 import { LoaderScene } from "./common_scenes/LoaderScene";
 import { ResourceManager } from "./ResourceManager";
 import { SceneManager } from "./SceneManager";
-import { ClientOutcomeMessageType } from "./types/ClientOutcomeMessageType";
 
 export class ClientApplication
 {
