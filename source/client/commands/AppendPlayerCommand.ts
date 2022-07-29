@@ -9,7 +9,7 @@ export class AppendPlayerCommand extends ClientCommand<AppendPlayerMessage>
 		const { index, state } = this._message.data;
 
 		this._scene.appendPlayer(
-			new PlayerView(state.color),
+			new PlayerView(state.type),
 			index, state
 		);
 	}

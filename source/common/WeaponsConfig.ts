@@ -3,8 +3,8 @@ import { WeaponType } from "./data_types/WeaponType";
 import { PLAYER_RADIUS } from "./GameConfig";
 
 export const WEAPON_FIST: Weapon = {
-	attack: 3,
-	range: PLAYER_RADIUS + 0.15,
+	attack: 6,
+	range: PLAYER_RADIUS + 0.3,
 	angleDeg: 90,
 
 	type: WeaponType.MELEE,

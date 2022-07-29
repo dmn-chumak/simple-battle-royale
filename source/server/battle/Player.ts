@@ -1,6 +1,8 @@
 import { Body, Sphere, Vec3 } from "cannon-es";
 
 import { PlayerState } from "../../common/data_types/PlayerState";
+import { PlayerType } from "../../common/data_types/PlayerType";
+import { getRandomPlayer } from "../../common/data_types/PlayerType";
 import { Weapon } from "../../common/data_types/Weapon";
 import { PLAYER_RADIUS } from "../../common/GameConfig";
 import { cloneNewWeapon } from "../../common/WeaponsConfig";
@@ -12,7 +14,7 @@ export class Player
 	public static readonly DEFAULT_MAX_HEALTH: number = 100;
 
 	private readonly _index: number;
-	protected readonly _color: number;
+	protected readonly _type: PlayerType;
 
 	protected _battleArena: BattleArena;
 	protected _body3D: Body;
@@ -29,7 +31,7 @@ export class Player
 	public constructor(index: number)
 	{
 		this._index = index;
-		this._color = 0xFFFFFF * Math.random();
+		this._type = getRandomPlayer();
 
 		this._currHP = Player.DEFAULT_MAX_HEALTH;
 		this._maxHP = Player.DEFAULT_MAX_HEALTH;
@@ -91,7 +93,7 @@ export class Player
 		const position = this._body3D.position;
 
 		return {
-			color: this._color,
+			type: this._type,
 			rotation: this._rotation,
 			x: position.x,
 			y: position.y,
@@ -159,9 +161,9 @@ export class Player
 		return this._index;
 	}
 
-	public get color(): number
+	public get type(): PlayerType
 	{
-		return this._color;
+		return this._type;
 	}
 
 	public get body(): Body
