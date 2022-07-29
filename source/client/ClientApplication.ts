@@ -35,7 +35,7 @@ export class ClientApplication
 		const context = canvas.getContext("webgl2", {depth: true, antialias: true, stencil: true});
 		document.body.appendChild(canvas);
 
-		this._resourceManager = new ResourceManager();
+		this._resourceManager = ResourceManager.getInstance();
 
 		this._threeRenderer = new WebGLRenderer({context, canvas, logarithmicDepthBuffer: true});
 		this._threeScene = new Scene();

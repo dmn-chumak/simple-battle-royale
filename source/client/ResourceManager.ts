@@ -6,6 +6,8 @@ import { Texture } from "three";
 import { TextureLoader } from "three";
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { AnimationClip } from "three/src/Three";
+import { AnimationMixer } from "three";
 
 interface ThreeQueueItem
 {
@@ -21,6 +23,7 @@ interface ThreeResourceCache<Type>
 
 export class ResourceManager
 {
+	private static _instance: ResourceManager = null;
 	private _progressCallback: (progress: number) => void;
 	private _completeCallback: () => void;
 
@@ -52,6 +55,24 @@ export class ResourceManager
 		this._threeTotalItems = 0;
 		this._threeLoaderQueue = [];
 		this._pixiTotalItems = 0;
+	}
+
+	private static createInstance(): ResourceManager
+	{
+		this._instance = new ResourceManager();
+		return this._instance;
+	}
+
+	public static getInstance(): ResourceManager
+	{
+		if (!this._instance)
+		{
+			return this.createInstance();
+		}
+		else
+		{
+			return this._instance;
+		}
 	}
 
 	private pixiLoadProgressHandler = () =>
@@ -133,6 +154,11 @@ export class ResourceManager
 	public obtainThreeTexture(name: string): Texture
 	{
 		return this._threeTextureCache[name];
+	}
+
+	public obtainGLTFObject(name: string): GLTF
+	{
+		return this._threeModelCache[name];
 	}
 
 	public obtainThreeModel(name: string): Group

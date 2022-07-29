@@ -66,7 +66,9 @@ export class GameScene extends Scene
 					type: CommandType.CL_ATTACK,
 					data: {}
 				});
+				this._player.punch();
 			};
+
 		}
 
 		threeScene.add(SceneUtils.createFloor());
@@ -152,6 +154,11 @@ export class GameScene extends Scene
 	public updateHealthValue(): void
 	{
 		this._healthPanelView.updateHealthText(this._player.maxHp, this._player.currHp);
+	}
+
+	public updateDeathText(): void
+	{
+		this._healthPanelView.updateDeathText();
 	}
 
 	public override resize(): void

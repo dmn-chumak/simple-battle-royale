@@ -17,9 +17,11 @@ export class Player
 
 	protected _currHP: number;
 	protected _maxHP: number;
+	protected _isDead: boolean;
 
 	protected readonly _fist: Weapon;
 	protected _currWeapon: Weapon;
+	protected _startWeaponCoolDownTime: number;
 
 	public constructor()
 	{
@@ -27,14 +29,18 @@ export class Player
 
 		this._currHP = Player.DEFAULT_MAX_HEALTH;
 		this._maxHP = Player.DEFAULT_MAX_HEALTH;
+		this._isDead = false;
 
 		this._fist = {
 			attack: 3,
 			range: PLAYER_RADIUS + 0.15,
+			angleDeg: 90,
+
 			type: WeaponType.MELEE,
-			coolDownSec: 2
+			coolDownSec: 1
 		};
 		this._currWeapon = this._fist;
+		this._startWeaponCoolDownTime = -1;
 	}
 
 	public enterBattleArena(battleArena: BattleArena): void
@@ -72,7 +78,13 @@ export class Player
 
 	public updateFrame(): void
 	{
-		// empty
+		if (this._currWeapon.isCoolDown && this._startWeaponCoolDownTime > 0)
+		{
+			if (Date.now() - this._startWeaponCoolDownTime >= this._currWeapon.coolDownSec * 1000)
+			{
+				this.resetWeaponCoolDown();
+			}
+		}
 	}
 
 	public getCurrentState(): PlayerState
@@ -98,20 +110,43 @@ export class Player
 	 */
 	public changeHP(delta: number): void
 	{
+		if (this._isDead)
+		{
+			return;
+		}
+
 		this._currHP += delta;
 		if (this._currHP > this._maxHP)
 		{
 			this._currHP = this._maxHP;
 		}
-		if (this._currHP < 0)
+		if (this._currHP <= 0)
 		{
+			this._isDead = true;
 			this._currHP = 0;
 		}
 	}
 
 	public attack(): void
 	{
-		this._battleArena.playerAttacked(this);
+		if (this._isDead || this._currWeapon.isCoolDown)
+		{
+			return;
+		}
+		this._battleArena.startAttack(this);
+		this.startWeaponCoolDown();
+	}
+
+	protected startWeaponCoolDown(): void
+	{
+		this._currWeapon.isCoolDown = true;
+		this._startWeaponCoolDownTime = Date.now();
+	}
+
+	protected resetWeaponCoolDown(): void
+	{
+		this._currWeapon.isCoolDown = false;
+		this._startWeaponCoolDownTime = -1;
 	}
 
 	public get color(): number
@@ -136,7 +171,7 @@ export class Player
 
 	public get isAlive(): boolean
 	{
-		return this._currHP <= 0;
+		return !this._isDead;
 	}
 
 	public get currWeapon(): Weapon
