@@ -13,7 +13,7 @@ import { ResourceManager } from "../ResourceManager";
 
 export class PlayerView extends Object3D
 {
-	private static readonly ANIMATION_NAMES: string[] = [ "breakdance", "dying", "jump", "pick_up", "punch", "run", "throw" ];
+	private static readonly ANIMATION_NAMES: string[] = [ "breakdance", "dying", "idle", "jump", "pick_up", "punch", "run", "throw" ];
 	private _threeAnimationActions: AnimationAction[];
 	private _currHp: number;
 	private _maxHp: number;
