@@ -1,16 +1,20 @@
 import { SceneManager } from "../SceneManager";
+import { GameModelType } from "./GameModelTypes";
 import { GameServerConnectScene } from "./GameServerConnectScene";
 import { Scene } from "./Scene";
 
 export class LoaderScene extends Scene
 {
+	public static readonly MODEL_TYPES: string[] = [ "drinker", "guard", "warriorGirl" ];
+
 	public override start(manager: SceneManager): void
 	{
 		const { resourceManager } = manager.application;
 
 		resourceManager.registerThreeDataTexture("env", "environment.hdr");
-		resourceManager.registerThreeModel("cigarGuy", "characters/cigar_guy.glb");
-		resourceManager.registerThreeModel("guard", "characters/guard.glb");
+		resourceManager.registerThreeModel(LoaderScene.MODEL_TYPES[0], "characters/cigar_guy.glb");
+		resourceManager.registerThreeModel(LoaderScene.MODEL_TYPES[1], "characters/guard.glb");
+		resourceManager.registerThreeModel(LoaderScene.MODEL_TYPES[2], "characters/warrior_girl.glb");
 
 		resourceManager.progressCallback = (progress: number) =>
 		{
