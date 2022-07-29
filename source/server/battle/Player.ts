@@ -3,6 +3,7 @@ import { Body, Sphere, Vec3 } from "cannon-es";
 import { PlayerState } from "../../common/data_types/PlayerState";
 import { Weapon } from "../../common/data_types/Weapon";
 import { PLAYER_RADIUS } from "../../common/GameConfig";
+import { cloneNewWeapon } from "../../common/WeaponsConfig";
 import { WEAPON_FIST } from "../../common/WeaponsConfig";
 import { BattleArena } from "./BattleArena";
 
@@ -20,6 +21,7 @@ export class Player
 	protected _maxHP: number;
 	protected _isDead: boolean;
 
+	protected _defaultFist: Weapon;
 	protected _currWeapon: Weapon;
 	protected _startWeaponCoolDownTime: number;
 
@@ -32,7 +34,8 @@ export class Player
 		this._maxHP = Player.DEFAULT_MAX_HEALTH;
 		this._isDead = false;
 
-		this._currWeapon = WEAPON_FIST;
+		this._defaultFist = cloneNewWeapon(WEAPON_FIST);
+		this._currWeapon = this._defaultFist;
 		this._startWeaponCoolDownTime = -1;
 	}
 
