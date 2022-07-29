@@ -1,4 +1,4 @@
-import { IItemData } from "./IItemData";
+import { IItemData } from "../data_types/IItemData";
 import { InventorySlot } from "./InventorySlot";
 
 export class Inventory
@@ -10,7 +10,6 @@ export class Inventory
 	{
 		this.slotsQuantity = slotsQuantity;
 		this.createInventorySlots();
-
 	}
 
 	protected createInventorySlots()
@@ -21,26 +20,24 @@ export class Inventory
 		}
 	}
 
-	public AddItem(item: IItemData): void
+	public addItem(item: IItemData): void
 	{
 		for (let i = 0; i < this.slotsQuantity; i++)
 		{
-			if (this.slots[i].IsEmpty())
+			if (this.slots[i].isEmpty)
 			{
-				this.slots[i].AddItem(item);
+				this.slots[i].addItem(item);
 				break;
 			}
 			else
 			{
 				//inventory is full
 			}
-
 		}
 	}
 
-	public RemoveItem(slotID: number): void
+	public removeItem(slotID: number): void
 	{
-		this.slots[slotID].RemoveItem();
+		this.slots[slotID].removeItem();
 	}
-
 }

@@ -4,6 +4,7 @@ import { AmbientLight } from "three";
 
 import { CommandMessageDecoder } from "../../common/CommandMessageDecoder";
 import { CommandType } from "../../common/CommandType";
+import { IItemData } from "../../common/data_types/IItemData";
 import { PlayerState } from "../../common/data_types/PlayerState";
 import { BattleArenaView } from "../battle/BattleArenaView";
 import { MovablePlayerView } from "../battle/MovablePlayerView";
@@ -159,6 +160,11 @@ export class GameScene extends Scene
 	{
 		this._healthPanelView.x = 500;
 		this._inventory.resize();
+	}
+
+	public addItemsToInventory(items: IItemData[]): void
+	{
+		this._inventory.addItems(items);
 	}
 
 	protected playerAttack(): void

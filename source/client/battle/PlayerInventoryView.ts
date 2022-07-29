@@ -2,13 +2,10 @@ import { Text } from "pixi.js";
 import { Graphics } from "pixi.js";
 import { Container } from "pixi.js";
 
-export interface IItemData
-{
-	id: number;
-	name: string;
-	quantity: number;
-	icon: string;
-}
+import { IItemData } from "../../common/data_types/IItemData";
+import { ItemType } from "../../common/data_types/ItemType";
+
+const ITEM_NAME = [ "Grass", "Bark", "Stick", "Rock", "Bandage", "Helmet", "Armor", "Club", "Dagger" ];
 
 export class PlayerInventoryView extends Container
 {
@@ -29,12 +26,10 @@ export class PlayerInventoryView extends Container
 		document.body.addEventListener("keydown", this.toggleVisiblity.bind(this));
 
 		this._items = [
-			{ id: 0, name: "Wood", quantity: 1, icon: "" },
-			{ id: 1, name: "Metal", quantity: 2, icon: "" },
-			{ id: 2, name: "Ball", quantity: 2, icon: "" },
-			{ id: 3, name: "Car", quantity: 2, icon: "" },
-			{ id: 4, name: "Arse", quantity: 0, icon: "" },
-			{ id: 5, name: "Horse", quantity: 0, icon: "" },
+			{ type: ItemType.Bark, quantity: 1, isEquipable: false },
+			{ type: ItemType.Dagger, quantity: 1, isEquipable: false },
+			{ type: ItemType.Bandage, quantity: 1, isEquipable: false },
+			{ type: ItemType.Club, quantity: 1, isEquipable: true },
 		]
 	}
 
@@ -69,6 +64,28 @@ export class PlayerInventoryView extends Container
 		this._items = items;
 	}
 
+	public addItems(items: IItemData[]): void
+	{
+		for (const item of items)
+		{
+			let itemExists = false;
+			for (const existItem of this._items)
+			{
+				if (item.type === existItem.type)
+				{
+					existItem.quantity += item.quantity;
+					itemExists = true;
+					break;
+				}
+			}
+
+			if (!itemExists)
+			{
+				this._items.push(item);
+			}
+		}
+	}
+
 	protected updateView(): void
 	{
 		this._inventoryItemsContainer.removeChildren();
@@ -76,13 +93,13 @@ export class PlayerInventoryView extends Container
 		let y = window.innerHeight / 4 + 20;
 		for (const item of this._items)
 		{
-			const name: Text = new Text(item.name);
+			const name: Text = new Text(ITEM_NAME[item.type]);
 			name.position.x = x + 10;
 			name.position.y = y;
 			this._inventoryItemsContainer.addChild(name);
 
 			const quantity: Text = new Text(item.quantity);
-			quantity.position.x = x + 100;
+			quantity.position.x = x + 200;
 			quantity.position.y = y;
 			this._inventoryItemsContainer.addChild(quantity);
 
