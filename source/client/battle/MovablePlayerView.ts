@@ -24,6 +24,10 @@ export class MovablePlayerView extends PlayerView
 		document.body.onkeydown = (event) =>
 		{
 			this._keysMap[event.code] = true;
+			if (event.code === "Key1")
+			{
+				this.playerChangedWeapon();
+			}
 		};
 
 		document.body.onkeyup = (event) =>
@@ -72,5 +76,13 @@ export class MovablePlayerView extends PlayerView
 			data: movementData
 		};
 		this._application.sendMessage(message);
+	}
+
+	protected playerChangedWeapon(): void
+	{
+		this._application.sendMessage({
+			type: CommandType.CL_CHANGE_WEAPON,
+			data: {}
+		});
 	}
 }
