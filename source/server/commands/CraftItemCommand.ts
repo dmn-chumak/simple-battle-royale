@@ -1,6 +1,6 @@
 import { CraftItemMessage } from "../../common/client_messages/CraftItemMessage";
 import { CommandType } from "../../common/CommandType";
-import { ItemToAdd } from "../../common/data_types/ItemToAdd";
+import { IItemData } from "../../common/data_types/IItemData";
 import { ServerCommand } from "../ServerCommand";
 import { AVAILABLE_RECIPES } from "../types/AvailableResipes";
 
@@ -23,7 +23,7 @@ export class CraftItemCommand extends ServerCommand<CraftItemMessage>
 							type: recipe.result,
 							amount: 1
 						}
-					] as ItemToAdd[]
+					] as IItemData[]
 				}
 			});
 		}

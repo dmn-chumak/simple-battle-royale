@@ -1,32 +1,31 @@
-import { IItemData } from "./IItemData";
+import { IItemData } from "../data_types/IItemData";
 
 export class InventorySlot
 {
-	protected id: number;
-	protected isEmpty: boolean;
-	protected item: IItemData;
+	protected _id: number;
+	protected _isEmpty: boolean;
+	protected _item: IItemData;
 
 	constructor(id: number)
 	{
-		this.id = id;
-		this.isEmpty = true;
+		this._id = id;
+		this._isEmpty = true;
 	}
 
-	public AddItem(newItem: IItemData): void
+	public addItem(newItem: IItemData): void
 	{
-		this.item = newItem;
-		this.isEmpty = false;
+		this._item = newItem;
+		this._isEmpty = false;
 	}
 
-	public RemoveItem(): void
+	public removeItem(): void
 	{
-		this.item = null;
-		this.isEmpty = true;
+		this._item = null;
+		this._isEmpty = true;
 	}
 
-	public IsEmpty(): boolean
+	public get isEmpty(): boolean
 	{
-		return this.isEmpty;
+		return this._isEmpty;
 	}
-
 }
