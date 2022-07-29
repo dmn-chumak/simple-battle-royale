@@ -21,7 +21,7 @@ export class CraftItemCommand extends ServerCommand<CraftItemMessage>
 					items: [
 						{
 							type: recipe.result,
-							amount: 1
+							quantity: 1
 						}
 					] as IItemData[]
 				}
