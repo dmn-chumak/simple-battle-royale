@@ -12,6 +12,8 @@ export class LoaderScene extends Scene
 		resourceManager.registerThreeTexture("texture", "example.png");
 		resourceManager.registerThreeModel("model", "example.glb");
 		resourceManager.registerSound("sound", "example.mp3");
+		resourceManager.registerThreeModel("cigarGuy", "characters/cigar_guy.glb");
+		resourceManager.registerThreeModel("guard", "characters/guard.glb");
 
 		resourceManager.progressCallback = (progress: number) =>
 		{

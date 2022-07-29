@@ -110,8 +110,8 @@ export class Camera3rdPerson
 		if (this._follow)
 		{
 			const playerPos = this._follow.position.clone();
-			playerPos.y += 1;
-			playerPos.z += 1;
+			playerPos.y += 2;
+			playerPos.z += 3;
 			this._yawObject.position.copy(playerPos);
 		}
 	}
