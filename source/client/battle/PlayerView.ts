@@ -8,7 +8,6 @@ import { AnimationAction } from "three/src/animation/AnimationAction";
 import { clone as cloneSkeletone } from "three/examples/jsm/utils/SkeletonUtils";
 import { Weapon } from "../../common/data_types/Weapon";
 import { PLAYER_RADIUS } from "../../common/GameConfig";
-import { GameModelType } from "../common_scenes/GameModelTypes";
 import { LoaderScene } from "../common_scenes/LoaderScene";
 import { ResourceManager } from "../ResourceManager";
 

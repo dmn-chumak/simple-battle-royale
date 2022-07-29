@@ -1,5 +1,4 @@
 import { SceneManager } from "../SceneManager";
-import { GameModelType } from "./GameModelTypes";
 import { GameServerConnectScene } from "./GameServerConnectScene";
 import { Scene } from "./Scene";
 
