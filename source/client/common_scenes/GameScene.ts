@@ -11,7 +11,6 @@ import { MovablePlayerView } from "../battle/MovablePlayerView";
 import { PlayerInventoryView } from "../battle/PlayerInventoryView";
 import { PlayerView } from "../battle/PlayerView";
 import { PlayerViewMap } from "../battle/PlayerViewMap";
-import { Camera3rdPerson } from "../Camera3rdPerson";
 import { HealthPanelView } from "../healthPanel/HealthPanelView";
 import { SceneManager } from "../SceneManager";
 import { COMMAND_FACTORY } from "../types/ClientCommandFactory";
@@ -25,7 +24,6 @@ export class GameScene extends Scene
 	private readonly _inventory: PlayerInventoryView;
 	private _player: MovablePlayerView;
 	private _healthPanelView: HealthPanelView;
-	protected _camera: Camera3rdPerson;
 
 	public constructor()
 	{
@@ -42,11 +40,7 @@ export class GameScene extends Scene
 	{
 		super.start(manager);
 
-		const { resourceManager, threeScene, threeCamera, socket } = manager.application;
-
-		this._camera = new Camera3rdPerson(threeCamera);
-		threeScene.add(this._camera.getObject());
-		//this._camera.lock();
+		const { resourceManager, threeScene, socket } = manager.application;
 
 		const evnTexture = resourceManager.obtainThreeTexture("env");
 		const pmremGenerator = new PMREMGenerator(manager.application.threeRenderer);
@@ -57,13 +51,8 @@ export class GameScene extends Scene
 		threeScene.environment = pmremData.texture;
 		threeScene.add(this._battleArena);
 
-		document.body.onclick = () => {
-			if (!this._camera.isLocked)
-			{
-				this._camera.lock();
-				this._camera.enabled = true;
-			}
-			//resourceManager.obtainSound("sound").play();
+		document.body.onclick = () =>
+		{
 			this.playerAttack();
 		};
 
@@ -76,7 +65,8 @@ export class GameScene extends Scene
 		this.addChild(this._healthPanelView);
 		this.addChild(this._inventory);
 
-		socket.onmessage = (event) => {
+		socket.onmessage = (event) =>
+		{
 			const message = CommandMessageDecoder.decode(event.data);
 			const commandType = COMMAND_FACTORY[message.type];
 			const command = new commandType(message, this);
@@ -100,15 +90,20 @@ export class GameScene extends Scene
 
 	public updateCamera(): void
 	{
-		if (this._camera.enabled)
-		{
-			this._camera.update();
-		}
+		const { threeCamera } = this._manager.application;
+
+		const offset = 6;
+		const height = 5;
+
+		threeCamera.position.x = this._player.position.x - Math.sin(this._player.rotation.y) * offset;
+		threeCamera.position.z = this._player.position.z - Math.cos(this._player.rotation.y) * offset;
+		threeCamera.position.y = this._player.position.y + height;
+
+		threeCamera.lookAt(this._player.position);
 	}
 
 	public override stop(): void
 	{
-		this._camera.dispose();
 		this._battleArena.removeFromParent();
 
 		super.stop();
@@ -143,7 +138,6 @@ export class GameScene extends Scene
 	public set player(value: MovablePlayerView)
 	{
 		this._player = value;
-		this._camera.follow(this._player);
 	}
 
 	public get player(): MovablePlayerView
