@@ -2,14 +2,15 @@ import { Body, Sphere, Vec3 } from "cannon-es";
 
 import { PlayerState } from "../../common/data_types/PlayerState";
 import { Weapon } from "../../common/data_types/Weapon";
-import { WeaponType } from "../../common/data_types/WeaponType";
 import { PLAYER_RADIUS } from "../../common/GameConfig";
+import { WEAPON_FIST } from "../../common/WeaponsConfig";
 import { BattleArena } from "./BattleArena";
 
 export class Player
 {
 	public static readonly DEFAULT_MAX_HEALTH: number = 100;
 
+	private readonly _index: number;
 	protected readonly _color: number;
 
 	protected _battleArena: BattleArena;
@@ -19,27 +20,19 @@ export class Player
 	protected _maxHP: number;
 	protected _isDead: boolean;
 
-	protected readonly _fist: Weapon;
 	protected _currWeapon: Weapon;
 	protected _startWeaponCoolDownTime: number;
 
-	public constructor()
+	public constructor(index: number)
 	{
+		this._index = index;
 		this._color = 0xFFFFFF * Math.random();
 
 		this._currHP = Player.DEFAULT_MAX_HEALTH;
 		this._maxHP = Player.DEFAULT_MAX_HEALTH;
 		this._isDead = false;
 
-		this._fist = {
-			attack: 3,
-			range: PLAYER_RADIUS + 0.15,
-			angleDeg: 90,
-
-			type: WeaponType.MELEE,
-			coolDownSec: 1
-		};
-		this._currWeapon = this._fist;
+		this._currWeapon = WEAPON_FIST;
 		this._startWeaponCoolDownTime = -1;
 	}
 
@@ -147,6 +140,11 @@ export class Player
 	{
 		this._currWeapon.isCoolDown = false;
 		this._startWeaponCoolDownTime = -1;
+	}
+
+	public get index(): number
+	{
+		return this._index;
 	}
 
 	public get color(): number
