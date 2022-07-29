@@ -1,4 +1,6 @@
-import { Body, ContactMaterial, GSSolver, Material, Plane, SplitSolver, World, Vec3 } from "cannon-es";
+import { Body, ContactMaterial, GSSolver, Material, Plane, SplitSolver, Vec3, World } from "cannon-es";
+import { CommandType } from "../../common/CommandType";
+import { ActionType } from "../../common/data_types/ActionType";
 import { PlayerStateMap } from "../../common/data_types/PlayerStateMap";
 import { WeaponType } from "../../common/data_types/WeaponType";
 import { ATTACK_DELAY } from "../../common/GameConfig";
@@ -69,6 +71,13 @@ export class BattleArena
 			startTime: Date.now(),
 			delaySec: ATTACK_DELAY
 		});
+		this._application.broadcastMessage({
+			type: CommandType.SV_PLAYER_ACTION,
+			data: {
+				playerIndex: player.index,
+				action: ActionType.ATTACK
+			}
+		});
 	}
 
 	protected initWorld(): void
@@ -130,15 +139,15 @@ export class BattleArena
 	protected handleMeleeAttack(player: Player): void
 	{
 		// TODO: there is no direction of player yet, register damage by all range area around the player
+		if (!player || !player.body)
+		{
+			return;
+		}
 		const playerPos: Vec3 = player.body.position;
 		this._application.clients.forEach((client => {
-			const clientPos: Vec3 = client.player.body.position;
-			if (clientPos.x === playerPos.x && clientPos.y === playerPos.y && clientPos.z === playerPos.z)
+			if (client && client.player && client.player.body && client.player.index !== player.index)
 			{
-				// Skip current player
-			}
-			else
-			{
+				const clientPos: Vec3 = client.player.body.position;
 				const distance = Math.sqrt((clientPos.x - playerPos.x) ** 2 + (clientPos.z - playerPos.z) ** 2);
 				if (distance < player.currWeapon.range + PLAYER_RADIUS)
 				{
@@ -158,5 +167,13 @@ export class BattleArena
 		// TODO: calculate damage considering armor
 		const damage = attack;
 		player.changeHP(-damage);
+
+		this._application.broadcastMessage({
+			type: CommandType.SV_PLAYER_ACTION,
+			data: {
+				playerIndex: player.index,
+				action: ActionType.HIT
+			}
+		});
 	}
 }

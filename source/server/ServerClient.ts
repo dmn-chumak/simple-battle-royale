@@ -14,7 +14,7 @@ export class ServerClient
 
 	public constructor(socket: WebSocket, index: number)
 	{
-		this._player = new Player();
+		this._player = new Player(index);
 		this._commandsList = [];
 		this._index = index;
 		this._socket = socket;
