@@ -87,6 +87,11 @@ export class GameScene extends Scene
 
 	public override update(delta: number): void
 	{
+		for (const key in this._playersMap)
+		{
+			this._playersMap[key].updateMixer(0.05);
+		}
+
 		if (this._player)
 		{
 			this._player.update();

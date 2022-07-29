@@ -28,7 +28,6 @@ export class UpdateWorldCommand extends ClientCommand<UpdateWorldMessage>
 
 		this._scene.updateHealthValue();
 		this._scene.updateCamera();
-		this._scene.player.updateMixer(0.05);
 
 		if (!this._scene.player.isAlive)
 		{
