@@ -121,10 +121,7 @@ export class PlayerView extends Object3D
 	{
 		const index = PlayerView.ANIMATION_NAMES.indexOf(name);
 		const action = this._threeAnimationActions[index];
-		if (!action.isRunning())
-		{
-			action.stop();
-			action.play();
-		}
+		action.stop();
+		action.play();
 	}
 }
