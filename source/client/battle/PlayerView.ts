@@ -6,6 +6,7 @@ import { AnimationMixer } from "three";
 import { Object3D } from "three";
 import { AnimationAction } from "three/src/animation/AnimationAction";
 import { clone as cloneSkeletone } from "three/examples/jsm/utils/SkeletonUtils";
+import { Weapon } from "../../common/data_types/Weapon";
 import { PLAYER_RADIUS } from "../../common/GameConfig";
 import { ResourceManager } from "../ResourceManager";
 
@@ -18,15 +19,16 @@ export class PlayerView extends Object3D
 	private _action: AnimationAction;
 	private _mixer: AnimationMixer;
 	private _isAlive: boolean;
+	private _weaponInfo: Weapon;
 
 	public constructor(color: number)
 	{
 		super();
 
-		const circle = new Mesh(new SphereGeometry(PLAYER_RADIUS), new MeshLambertMaterial({color}));
-		circle.castShadow = true;
-		circle.receiveShadow = true;
-		this.add(circle);
+		// const circle = new Mesh(new SphereGeometry(PLAYER_RADIUS), new MeshLambertMaterial({color}));
+		// circle.castShadow = true;
+		// circle.receiveShadow = true;
+		// this.add(circle);
 
 		this._isAlive = true;
 
@@ -77,6 +79,16 @@ export class PlayerView extends Object3D
 	public set isAlive(isAlive: boolean)
 	{
 		this._isAlive = isAlive;
+	}
+
+	public get weaponInfo(): Weapon
+	{
+		return this._weaponInfo;
+	}
+
+	public set weaponInfo(value: Weapon)
+	{
+		this._weaponInfo = value;
 	}
 
 	public punch(): void
