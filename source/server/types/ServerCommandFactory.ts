@@ -3,6 +3,7 @@ import { Command } from "../../common/Command";
 import { CommandMessage } from "../../common/CommandMessage";
 import { CommandType } from "../../common/CommandType";
 import { AttackClientCommand } from "../commands/AttackClientCommand";
+import { ChangeWeaponCommand } from "../commands/ChangeWeaponCommand";
 import { PlayerMovementCommand } from "../commands/PlayerMovementCommand";
 import { ServerApplication } from "../ServerApplication";
 import { ServerClient } from "../ServerClient";
@@ -14,5 +15,6 @@ export interface ServerCommandFactory
 
 export const COMMAND_FACTORY: ServerCommandFactory = {
 	[CommandType.CL_PLAYER_MOVEMENT]: PlayerMovementCommand,
-	[CommandType.CL_ATTACK]: AttackClientCommand
+	[CommandType.CL_ATTACK]: AttackClientCommand,
+	[CommandType.CL_CHANGE_WEAPON]: ChangeWeaponCommand
 };

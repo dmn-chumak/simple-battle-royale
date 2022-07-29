@@ -133,6 +133,11 @@ export class Player
 		this.startWeaponCoolDown();
 	}
 
+	public changeWeapon(): void
+	{
+		//TODO
+	}
+
 	protected startWeaponCoolDown(): void
 	{
 		this._currWeapon.isCoolDown = true;
