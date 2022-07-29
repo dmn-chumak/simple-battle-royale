@@ -8,6 +8,8 @@ import { AnimationAction } from "three/src/animation/AnimationAction";
 import { clone as cloneSkeletone } from "three/examples/jsm/utils/SkeletonUtils";
 import { Weapon } from "../../common/data_types/Weapon";
 import { PLAYER_RADIUS } from "../../common/GameConfig";
+import { GameModelType } from "../common_scenes/GameModelTypes";
+import { LoaderScene } from "../common_scenes/LoaderScene";
 import { ResourceManager } from "../ResourceManager";
 
 export class PlayerView extends Object3D
@@ -35,7 +37,7 @@ export class PlayerView extends Object3D
 		this._threeAnimationActions = [];
 
 		const resourceManager = ResourceManager.getInstance();
-		const gltfModel = resourceManager.obtainGLTFObject("cigarGuy");
+		const gltfModel = resourceManager.obtainGLTFObject(this.chooseSkin());
 
 		const cloneScene = cloneSkeletone(gltfModel.scene);
 
@@ -126,5 +128,12 @@ export class PlayerView extends Object3D
 			action.stop();
 			action.play();
 		}
+	}
+
+	private chooseSkin(): string
+	{
+		const types = LoaderScene.MODEL_TYPES;
+		const type = types[Math.floor(Math.random() * types.length)];
+		return type;
 	}
 }
