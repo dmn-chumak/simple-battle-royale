@@ -21,6 +21,8 @@ export class UpdateWorldCommand extends ClientCommand<UpdateWorldMessage>
 			player.position.y = playerState.y;
 			player.position.z = playerState.z;
 
+			player.weaponInfo = playerState.currWeapon;
+
 			this.updateHpState(playerState, player);
 		}
 

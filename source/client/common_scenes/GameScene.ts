@@ -56,18 +56,14 @@ export class GameScene extends Scene
 		threeScene.environment = pmremData.texture;
 		threeScene.add(this._battleArena);
 
-		document.body.onclick = () =>
-		{
+		document.body.onclick = () => {
 			if (!this._camera.isLocked)
 			{
 				this._camera.lock();
 				this._camera.enabled = true;
 			}
-			this._manager.application.sendMessage({
-				type: CommandType.CL_ATTACK,
-				data: {}
-			});
-			this._player.punch();
+			//resourceManager.obtainSound("sound").play();
+			this.playerAttack();
 		};
 
 		threeScene.add(SceneUtils.createFloor());
@@ -79,8 +75,7 @@ export class GameScene extends Scene
 		this.addChild(this._healthPanelView);
 		this.addChild(this._inventory);
 
-		socket.onmessage = (event) =>
-		{
+		socket.onmessage = (event) => {
 			const message = CommandMessageDecoder.decode(event.data);
 			const commandType = COMMAND_FACTORY[message.type];
 			const command = new commandType(message, this);
@@ -164,5 +159,17 @@ export class GameScene extends Scene
 	{
 		this._healthPanelView.x = 500;
 		this._inventory.resize();
+	}
+
+	protected playerAttack(): void
+	{
+		if (this._player.isAlive && !this._player.weaponInfo.isCoolDown)
+		{
+			this._manager.application.sendMessage({
+				type: CommandType.CL_ATTACK,
+				data: {}
+			});
+			this._player.punch();
+		}
 	}
 }

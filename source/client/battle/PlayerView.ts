@@ -1,10 +1,12 @@
 import { SphereGeometry } from "three";
-import { MeshLambertMaterial } from "three";
+import { MeshLambertMaterial, SkeletonHelper } from "three";
 import { Mesh } from "three";
 import { LoopOnce } from "three";
 import { AnimationMixer } from "three";
 import { Object3D } from "three";
 import { AnimationAction } from "three/src/animation/AnimationAction";
+import { clone as cloneSkeletone } from "three/examples/jsm/utils/SkeletonUtils";
+import { Weapon } from "../../common/data_types/Weapon";
 import { PLAYER_RADIUS } from "../../common/GameConfig";
 import { ResourceManager } from "../ResourceManager";
 
@@ -17,15 +19,16 @@ export class PlayerView extends Object3D
 	private _action: AnimationAction;
 	private _mixer: AnimationMixer;
 	private _isAlive: boolean;
+	private _weaponInfo: Weapon;
 
 	public constructor(color: number)
 	{
 		super();
 
-		const circle = new Mesh(new SphereGeometry(PLAYER_RADIUS), new MeshLambertMaterial({color}));
-		circle.castShadow = true;
-		circle.receiveShadow = true;
-		this.add(circle);
+		// const circle = new Mesh(new SphereGeometry(PLAYER_RADIUS), new MeshLambertMaterial({color}));
+		// circle.castShadow = true;
+		// circle.receiveShadow = true;
+		// this.add(circle);
 
 		this._isAlive = true;
 
@@ -34,12 +37,9 @@ export class PlayerView extends Object3D
 		const resourceManager = ResourceManager.getInstance();
 		const gltfModel = resourceManager.obtainGLTFObject("cigarGuy");
 
-		const cloneScene = gltfModel.scene.clone(true);
+		const cloneScene = cloneSkeletone(gltfModel.scene);
 
-		console.log("gltfModel.scene ",gltfModel.scene)
-		console.log("cloneScene ",cloneScene)
-
-		// this.add(cloneScene);
+		this.add(cloneScene);
 
 		this._mixer = new AnimationMixer(cloneScene);
 
@@ -79,6 +79,16 @@ export class PlayerView extends Object3D
 	public set isAlive(isAlive: boolean)
 	{
 		this._isAlive = isAlive;
+	}
+
+	public get weaponInfo(): Weapon
+	{
+		return this._weaponInfo;
+	}
+
+	public set weaponInfo(value: Weapon)
+	{
+		this._weaponInfo = value;
 	}
 
 	public punch(): void
