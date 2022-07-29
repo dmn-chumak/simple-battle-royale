@@ -21,6 +21,7 @@ export class Player
 
 	protected readonly _fist: Weapon;
 	protected _currWeapon: Weapon;
+	protected _startWeaponCoolDownTime: number;
 
 	public constructor()
 	{
@@ -33,10 +34,13 @@ export class Player
 		this._fist = {
 			attack: 3,
 			range: PLAYER_RADIUS + 0.15,
+			angleDeg: 90,
+
 			type: WeaponType.MELEE,
 			coolDownSec: 2
 		};
 		this._currWeapon = this._fist;
+		this._startWeaponCoolDownTime = -1;
 	}
 
 	public enterBattleArena(battleArena: BattleArena): void
@@ -74,7 +78,13 @@ export class Player
 
 	public updateFrame(): void
 	{
-		// empty
+		if (this._currWeapon.isCoolDown && this._startWeaponCoolDownTime > 0)
+		{
+			if (Date.now() - this._startWeaponCoolDownTime >= this._currWeapon.coolDownSec * 1000)
+			{
+				this.resetWeaponCoolDown();
+			}
+		}
 	}
 
 	public getCurrentState(): PlayerState
@@ -119,11 +129,24 @@ export class Player
 
 	public attack(): void
 	{
-		if (this._isDead)
+		if (this._isDead || this._currWeapon.isCoolDown)
 		{
 			return;
 		}
-		this._battleArena.playerAttacked(this);
+		this._battleArena.startAttack(this);
+		this.startWeaponCoolDown();
+	}
+
+	protected startWeaponCoolDown(): void
+	{
+		this._currWeapon.isCoolDown = true;
+		this._startWeaponCoolDownTime = Date.now();
+	}
+
+	protected resetWeaponCoolDown(): void
+	{
+		this._currWeapon.isCoolDown = false;
+		this._startWeaponCoolDownTime = -1;
 	}
 
 	public get color(): number

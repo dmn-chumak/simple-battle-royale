@@ -1,9 +1,17 @@
 import { Body, ContactMaterial, GSSolver, Material, Plane, SplitSolver, World, Vec3 } from "cannon-es";
 import { PlayerStateMap } from "../../common/data_types/PlayerStateMap";
 import { WeaponType } from "../../common/data_types/WeaponType";
+import { ATTACK_DELAY } from "../../common/GameConfig";
 import { PLAYER_RADIUS } from "../../common/GameConfig";
 import { ServerApplication } from "../ServerApplication";
 import { Player } from "./Player";
+
+interface AttackInfo
+{
+	attackedPlayer: Player,
+	delaySec: number,
+	startTime: number
+}
 
 export class BattleArena
 {
@@ -11,11 +19,15 @@ export class BattleArena
 	protected readonly _world: World;
 	protected _physicsMaterial: Material;
 
+	protected _attacksPool: AttackInfo[];
+
 	public constructor(application: ServerApplication)
 	{
 		this._application = application;
 
 		this._world = new World();
+
+		this._attacksPool = [];
 
 		this.initWorld();
 		this.initMap();
@@ -24,6 +36,7 @@ export class BattleArena
 	public updateFrame(): void
 	{
 		this._world.fixedStep();
+		this.checkAttackStarting();
 	}
 
 	public getCurrentStateMap(): PlayerStateMap
@@ -47,6 +60,15 @@ export class BattleArena
 	public removePlayer(playerBody: Body): void
 	{
 		this._world.removeBody(playerBody);
+	}
+
+	public startAttack(player: Player): void
+	{
+		this._attacksPool.push({
+			attackedPlayer: player,
+			startTime: Date.now(),
+			delaySec: ATTACK_DELAY
+		});
 	}
 
 	protected initWorld(): void
@@ -84,23 +106,30 @@ export class BattleArena
 		this._world.addBody(groundBody);
 	}
 
-	public playerAttacked(player: Player): void
+	protected checkAttackStarting(): void
 	{
-		switch (player.currWeapon.type)
-		{
-			case WeaponType.MELEE:
-				this.handleMeleeAttack(player);
-				break;
-			case WeaponType.RANGED:
-				this.handleRangedAttack(player);
-				break;
-		}
+		const now = Date.now();
+		this._attacksPool = this._attacksPool.filter(info => {
+			if (now - info.startTime > info.delaySec * 1000)
+			{
+				switch (info.attackedPlayer.currWeapon.type)
+				{
+					case WeaponType.MELEE:
+						this.handleMeleeAttack(info.attackedPlayer);
+						break;
+					case WeaponType.RANGED:
+						this.handleRangedAttack(info.attackedPlayer);
+						break;
+				}
+				return false;
+			}
+			return true;
+		});
 	}
 
 	protected handleMeleeAttack(player: Player): void
 	{
 		// TODO: there is no direction of player yet, register damage by all range area around the player
-		// TODO: implement weapon cool down
 		const playerPos: Vec3 = player.body.position;
 		this._application.clients.forEach((client => {
 			const clientPos: Vec3 = client.player.body.position;
@@ -129,7 +158,5 @@ export class BattleArena
 		// TODO: calculate damage considering armor
 		const damage = attack;
 		player.changeHP(-damage);
-
-		// TODO: implement DEATH
 	}
 }
