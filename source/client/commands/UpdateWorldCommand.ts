@@ -7,13 +7,12 @@ export class UpdateWorldCommand extends ClientCommand<UpdateWorldMessage>
 {
 	public override execute(): void
 	{
-		const {playersMap} = this._message.data;
+		const { playersMap } = this._message.data;
 
 		for (const playerIndex in playersMap)
 		{
 			const player = this._scene.playersMap[playerIndex];
 			const playerState = playersMap[playerIndex];
-
 
 			this.checkDeath(playerState, player);
 			player.isAlive = playerState.isAlive;
@@ -22,13 +21,17 @@ export class UpdateWorldCommand extends ClientCommand<UpdateWorldMessage>
 			player.position.y = playerState.y;
 			player.position.z = playerState.z;
 
-
 			this.updateHpState(playerState, player);
 		}
 
 		this._scene.updateHealthValue();
 		this._scene.updateCamera();
 		this._scene.player.updateMixer(0.05);
+
+		if (!this._scene.player.isAlive)
+		{
+			this._scene.updateDeathText();
+		}
 	}
 
 	private updateHpState(playerState: PlayerState, player: PlayerView): void
@@ -39,10 +42,9 @@ export class UpdateWorldCommand extends ClientCommand<UpdateWorldMessage>
 
 	private checkDeath(playerState: PlayerState, player: PlayerView): void
 	{
-		if(player.isAlive !== playerState.isAlive)
+		if (player.isAlive !== playerState.isAlive)
 		{
-			this._scene.player.death();
-			this._scene.updateDeathText();
+			player.death();
 		}
 	}
 }

@@ -31,7 +31,7 @@ export class HealthPanelView extends Container
 			fontWeight: "bold"
 		});
 		this._deathText = new Text("", deathTextStyle);
-		this._deathText.y = 700;
+		this._deathText.y = 100;
 		this.addChild(this._deathText);
 	}
 

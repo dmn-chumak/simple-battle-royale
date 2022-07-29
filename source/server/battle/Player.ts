@@ -37,7 +37,7 @@ export class Player
 			angleDeg: 90,
 
 			type: WeaponType.MELEE,
-			coolDownSec: 2
+			coolDownSec: 1
 		};
 		this._currWeapon = this._fist;
 		this._startWeaponCoolDownTime = -1;
