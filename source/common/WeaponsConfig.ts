@@ -10,3 +10,16 @@ export const WEAPON_FIST: Weapon = {
 	type: WeaponType.MELEE,
 	coolDownSec: 1
 };
+
+export function cloneNewWeapon(weapon: Weapon): Weapon
+{
+	return {
+		attack: weapon.attack,
+		range: weapon.range,
+		angleDeg: weapon.angleDeg,
+
+		type: weapon.type,
+
+		coolDownSec: weapon.coolDownSec
+	};
+}
