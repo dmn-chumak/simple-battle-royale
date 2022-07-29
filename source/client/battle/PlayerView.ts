@@ -48,6 +48,10 @@ export class PlayerView extends Object3D
 		{
 			const action = this._mixer.clipAction(anim);
 			action.setLoop(LoopOnce, 0);
+			if (anim.name === PlayerView.ANIMATION_NAMES[1])
+			{
+				action.clampWhenFinished = true;
+			}
 			this._threeAnimationActions.push(action);
 		}
 	}
