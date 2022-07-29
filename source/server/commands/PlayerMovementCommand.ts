@@ -1,5 +1,6 @@
 import { Vec3 } from "cannon-es";
 import { PlayerMovementMessage } from "../../common/client_messages/PlayerMovementMessage";
+import { ROTATE_SPEED } from "../../common/GameConfig";
 import { PLAYER_SPEED } from "../../common/GameConfig";
 import { ServerCommand } from "../ServerCommand";
 
@@ -13,24 +14,28 @@ export class PlayerMovementCommand extends ServerCommand<PlayerMovementMessage>
 		}
 
 		const { moveForward, moveBackward, moveLeft, moveRight, jump } = this._message.data;
+		let velocity = 0;
 
 		if (moveRight)
 		{
-			this._client.player.body.velocity.x += PLAYER_SPEED;
+			this._client.player.rotation -= ROTATE_SPEED;
 		}
 		else if (moveLeft)
 		{
-			this._client.player.body.velocity.x -= PLAYER_SPEED;
+			this._client.player.rotation += ROTATE_SPEED;
 		}
 
 		if (moveBackward)
 		{
-			this._client.player.body.velocity.z += PLAYER_SPEED;
+			velocity -= PLAYER_SPEED;
 		}
 		else if (moveForward)
 		{
-			this._client.player.body.velocity.z -= PLAYER_SPEED;
+			velocity += PLAYER_SPEED;
 		}
+
+		this._client.player.body.velocity.x += Math.sin(this._client.player.rotation) * velocity;
+		this._client.player.body.velocity.z += Math.cos(this._client.player.rotation) * velocity;
 
 		if (jump)
 		{
