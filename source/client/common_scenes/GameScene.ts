@@ -1,3 +1,4 @@
+import { PMREMGenerator } from "three";
 import { Vector3 } from "three";
 import { AmbientLight } from "three";
 
@@ -46,25 +47,24 @@ export class GameScene extends Scene
 		threeScene.add(this._camera.getObject());
 		//this._camera.lock();
 
+		const evnTexture = resourceManager.obtainThreeTexture("env");
+		const pmremGenerator = new PMREMGenerator(manager.application.threeRenderer);
+		pmremGenerator.compileEquirectangularShader();
+		const pmremData = pmremGenerator.fromEquirectangular(evnTexture);
+
+		threeScene.background = pmremData.texture;
+		threeScene.environment = pmremData.texture;
 		threeScene.add(this._battleArena);
 
-		{
-			// examples of using resources, loaded from resource manager
-
-			// threeScene.add(resourceManager.obtainThreeModel("model"));
-			// this.addChild(Sprite.from("sprite"));
-
-			document.body.onclick = () => {
-				if (!this._camera.isLocked)
-				{
-					this._camera.lock();
-					this._camera.enabled = true;
-				}
-				//resourceManager.obtainSound("sound").play();
-				this.playerAttack();
-			};
-
-		}
+		document.body.onclick = () => {
+			if (!this._camera.isLocked)
+			{
+				this._camera.lock();
+				this._camera.enabled = true;
+			}
+			//resourceManager.obtainSound("sound").play();
+			this.playerAttack();
+		};
 
 		threeScene.add(SceneUtils.createFloor());
 		threeScene.add(new AmbientLight(0xFFFFFF, 0.1));

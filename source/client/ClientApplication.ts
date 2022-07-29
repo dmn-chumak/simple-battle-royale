@@ -135,4 +135,9 @@ export class ClientApplication
 	{
 		return this._threeRenderer.domElement;
 	}
+
+	public get threeRenderer(): WebGLRenderer
+	{
+		return this._threeRenderer;
+	}
 }

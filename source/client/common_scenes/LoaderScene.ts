@@ -8,10 +8,7 @@ export class LoaderScene extends Scene
 	{
 		const { resourceManager } = manager.application;
 
-		resourceManager.registerPixiSprite("sprite", "example.png");
-		resourceManager.registerThreeTexture("texture", "example.png");
-		resourceManager.registerThreeModel("model", "example.glb");
-		resourceManager.registerSound("sound", "example.mp3");
+		resourceManager.registerThreeDataTexture("env", "environment.hdr");
 		resourceManager.registerThreeModel("cigarGuy", "characters/cigar_guy.glb");
 		resourceManager.registerThreeModel("guard", "characters/guard.glb");
 

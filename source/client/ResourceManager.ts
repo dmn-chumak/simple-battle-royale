@@ -6,13 +6,12 @@ import { Texture } from "three";
 import { TextureLoader } from "three";
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { AnimationClip } from "three/src/Three";
-import { AnimationMixer } from "three";
+import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 
 interface ThreeQueueItem
 {
 	name: string;
-	loader: GLTFLoader | TextureLoader;
+	type: "gltf" | "texture" | "data_texture";
 	path: string;
 }
 
@@ -30,6 +29,7 @@ export class ResourceManager
 	private readonly _threeTextureCache: ThreeResourceCache<Texture>;
 	private readonly _threeModelCache: ThreeResourceCache<GLTF>;
 
+	private readonly _threeRGBELoader: RGBELoader;
 	private readonly _threeTextureLoader: TextureLoader;
 	private readonly _threeGLTFLoader: GLTFLoader;
 	private readonly _pixiLoader: Loader;
@@ -41,6 +41,7 @@ export class ResourceManager
 
 	public constructor()
 	{
+		this._threeRGBELoader = new RGBELoader();
 		this._threeTextureLoader = new TextureLoader();
 		this._threeGLTFLoader = new GLTFLoader();
 
@@ -99,16 +100,19 @@ export class ResourceManager
 
 		for (let index = 0; index < this._threeTotalItems; index++)
 		{
-			const { name, loader, path } = this._threeLoaderQueue[index];
-			const resource = await loader.loadAsync(path);
+			const { name, path, type } = this._threeLoaderQueue[index];
 
-			if (loader === this._threeTextureLoader)
+			switch (type)
 			{
-				this._threeTextureCache[name] = resource as Texture;
-			}
-			else
-			{
-				this._threeModelCache[name] = resource as GLTF;
+				case "texture":
+					this._threeTextureCache[name] = await this._threeTextureLoader.loadAsync(path);
+					break;
+				case "data_texture":
+					this._threeTextureCache[name] = await this._threeRGBELoader.loadAsync(path);
+					break;
+				case "gltf":
+					this._threeModelCache[name] = await this._threeGLTFLoader.loadAsync(path);
+					break;
 			}
 
 			if (this._progressCallback)
@@ -135,13 +139,19 @@ export class ResourceManager
 
 	public registerThreeTexture(name: string, path: string): void
 	{
-		this._threeLoaderQueue.push({ name, path, loader: this._threeTextureLoader });
+		this._threeLoaderQueue.push({ name, path, type: "texture" });
+		this._threeTotalItems++;
+	}
+
+	public registerThreeDataTexture(name: string, path: string): void
+	{
+		this._threeLoaderQueue.push({ name, path, type: "data_texture" });
 		this._threeTotalItems++;
 	}
 
 	public registerThreeModel(name: string, path: string): void
 	{
-		this._threeLoaderQueue.push({ name, path, loader: this._threeGLTFLoader });
+		this._threeLoaderQueue.push({ name, path, type: "gltf" });
 		this._threeTotalItems++;
 	}
 
