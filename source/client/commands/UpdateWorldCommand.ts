@@ -17,6 +17,7 @@ export class UpdateWorldCommand extends ClientCommand<UpdateWorldMessage>
 			this.checkDeath(playerState, player);
 			player.isAlive = playerState.isAlive;
 
+			player.rotation.y = playerState.rotation;
 			player.position.x = playerState.x;
 			player.position.y = playerState.y;
 			player.position.z = playerState.z;

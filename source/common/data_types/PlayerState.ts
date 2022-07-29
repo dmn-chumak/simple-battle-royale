@@ -3,6 +3,7 @@ import { Weapon } from "./Weapon";
 export interface PlayerState
 {
 	color: number;
+	rotation: number;
 	x: number;
 	y: number;
 	z: number;

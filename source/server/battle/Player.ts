@@ -16,6 +16,7 @@ export class Player
 
 	protected _battleArena: BattleArena;
 	protected _body3D: Body;
+	private _rotation: number;
 
 	protected _currHP: number;
 	protected _maxHP: number;
@@ -42,6 +43,8 @@ export class Player
 	public enterBattleArena(battleArena: BattleArena): void
 	{
 		this._battleArena = battleArena;
+
+		this._rotation = 0;
 
 		this._body3D = new Body({
 			mass: 50, //kg
@@ -89,6 +92,7 @@ export class Player
 
 		return {
 			color: this._color,
+			rotation: this._rotation,
 			x: position.x,
 			y: position.y,
 			z: position.z,
@@ -183,5 +187,15 @@ export class Player
 	public get currWeapon(): Weapon
 	{
 		return this._currWeapon;
+	}
+
+	public get rotation(): number
+	{
+		return this._rotation;
+	}
+
+	public set rotation(value: number)
+	{
+		this._rotation = value;
 	}
 }
