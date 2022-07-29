@@ -13,7 +13,7 @@ import { ResourceManager } from "../ResourceManager";
 
 export class PlayerView extends Object3D
 {
-	private static readonly ANIMATION_NAMES: string[] = [ "breakdance", "dying", "idle", "jump", "pick_up", "punch", "run", "throw" ];
+	private static readonly ANIMATION_NAMES: string[] = [ "breakdance", "dying", "idle", "jump", "pick_up", "punch", "receive_damage", "run", "throw" ];
 	private _threeAnimationActions: AnimationAction[];
 	private _currHp: number;
 	private _maxHp: number;
@@ -46,6 +46,8 @@ export class PlayerView extends Object3D
 
 		for (const anim of gltfModel.animations)
 		{
+			console.log("anim", anim)
+
 			const action = this._mixer.clipAction(anim);
 			action.setLoop(LoopOnce, 0);
 			if (anim.name === PlayerView.ANIMATION_NAMES[1])
@@ -114,6 +116,14 @@ export class PlayerView extends Object3D
 		if (this._isAlive)
 		{
 			this.playAnimation("run");
+		}
+	}
+
+	public receiveDamage(): void
+	{
+		if (this._isAlive)
+		{
+			this.playAnimation("receive_damage");
 		}
 	}
 

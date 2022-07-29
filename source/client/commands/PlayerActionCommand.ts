@@ -26,7 +26,7 @@ export class PlayerActionCommand extends ClientCommand<PlayerActionMessage>
 			}
 			case ActionType.HIT:
 			{
-				// TODO: play taking hit animation
+				player.receiveDamage();
 				break;
 			}
 		}
