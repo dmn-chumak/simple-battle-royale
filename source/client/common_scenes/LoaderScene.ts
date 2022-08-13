@@ -4,7 +4,6 @@ import { Scene } from "./Scene";
 
 export class LoaderScene extends Scene
 {
-	public static readonly MODEL_TYPES: string[] = [ "drinker", "guard", "warriorGirl" ];
 
 	public override start(manager: SceneManager): void
 	{
@@ -22,7 +21,7 @@ export class LoaderScene extends Scene
 		};
 
 		resourceManager.completeCallback = () =>
-		{
+		resourceManager.completeCallback = () => {
 			manager.changeScene(new GameServerConnectScene());
 			console.log("Loading complete!");
 		};

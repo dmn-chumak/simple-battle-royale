@@ -1,8 +1,10 @@
+import { PlayerType } from "./PlayerType";
 import { Weapon } from "./Weapon";
 
 export interface PlayerState
 {
-	color: number;
+	type: PlayerType;
+	rotation: number;
 	x: number;
 	y: number;
 	z: number;
