@@ -1,9 +1,11 @@
+import { PlayerType } from "../../common/data_types/PlayerType";
 import { SceneManager } from "../SceneManager";
 import { GameServerConnectScene } from "./GameServerConnectScene";
 import { Scene } from "./Scene";
 
 export class LoaderScene extends Scene
 {
+	public static readonly MODEL_TYPES: string[] = [ PlayerType.DRINKER, PlayerType.GUARD, PlayerType.WARRIOR_GIRL ];
 
 	public override start(manager: SceneManager): void
 	{
