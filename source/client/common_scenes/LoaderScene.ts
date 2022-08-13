@@ -22,7 +22,6 @@ export class LoaderScene extends Scene
 			console.log(`Loading progress: ${ (progress * 100).toFixed(0) }%`);
 		};
 
-		resourceManager.completeCallback = () =>
 		resourceManager.completeCallback = () => {
 			manager.changeScene(new GameServerConnectScene());
 			console.log("Loading complete!");
