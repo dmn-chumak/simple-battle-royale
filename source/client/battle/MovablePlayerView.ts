@@ -1,6 +1,7 @@
 import { PlayerMovementMessageData } from "../../common/client_messages/PlayerMovementMessage";
 import { PlayerMovementMessage } from "../../common/client_messages/PlayerMovementMessage";
 import { CommandType } from "../../common/CommandType";
+import { PlayerType } from "../../common/data_types/PlayerType";
 import { ClientApplication } from "../ClientApplication";
 import { PlayerView } from "./PlayerView";
 
@@ -14,9 +15,9 @@ export class MovablePlayerView extends PlayerView
 	private readonly _application: ClientApplication;
 	private readonly _keysMap: KeyMap;
 
-	public constructor(application: ClientApplication, color: number)
+	public constructor(application: ClientApplication, type: PlayerType)
 	{
-		super(color);
+		super(type);
 
 		this._application = application;
 		this._keysMap = {};

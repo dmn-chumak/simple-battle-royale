@@ -15,14 +15,14 @@ export class InitializeWorldCommand extends ClientCommand<InitializeWorldMessage
 			const playerState = playersMap[playerIndex];
 
 			this._scene.appendPlayer(
-				new PlayerView(playerState.color),
+				new PlayerView(playerState.type),
 				parseInt(playerIndex),
 				playerState
 			);
 		}
 
 		this._scene.player = new MovablePlayerView(
-			application, state.color
+			application, state.type
 		);
 
 		this._scene.appendPlayer(

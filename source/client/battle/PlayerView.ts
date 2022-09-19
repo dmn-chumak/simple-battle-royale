@@ -6,6 +6,7 @@ import { AnimationMixer } from "three";
 import { Object3D } from "three";
 import { AnimationAction } from "three/src/animation/AnimationAction";
 import { clone as cloneSkeletone } from "three/examples/jsm/utils/SkeletonUtils";
+import { PlayerType } from "../../common/data_types/PlayerType";
 import { Weapon } from "../../common/data_types/Weapon";
 import { PLAYER_RADIUS } from "../../common/GameConfig";
 import { LoaderScene } from "../common_scenes/LoaderScene";
@@ -22,7 +23,7 @@ export class PlayerView extends Object3D
 	private _isAlive: boolean;
 	private _weaponInfo: Weapon;
 
-	public constructor(color: number)
+	public constructor(type: PlayerType)
 	{
 		super();
 
@@ -36,7 +37,7 @@ export class PlayerView extends Object3D
 		this._threeAnimationActions = [];
 
 		const resourceManager = ResourceManager.getInstance();
-		const gltfModel = resourceManager.obtainGLTFObject(this.chooseSkin());
+		const gltfModel = resourceManager.obtainGLTFObject(type);
 
 		const cloneScene = cloneSkeletone(gltfModel.scene);
 
@@ -138,12 +139,5 @@ export class PlayerView extends Object3D
 		const action = this._threeAnimationActions[index];
 		action.stop();
 		action.play();
-	}
-
-	private chooseSkin(): string
-	{
-		const types = LoaderScene.MODEL_TYPES;
-		const type = types[Math.floor(Math.random() * types.length)];
-		return type;
 	}
 }
