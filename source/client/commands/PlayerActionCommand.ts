@@ -9,10 +9,9 @@ export class PlayerActionCommand extends ClientCommand<PlayerActionMessage>
 	{
 		const { playerIndex, action } = this._message.data;
 		const player = this._scene.playersMap[playerIndex];
-		if (player !== this._scene.player)
-		{
-			this.handleAction(player, action);
-		}
+
+		this.handleAction(player, action);
+
 	}
 
 	protected handleAction(player: PlayerView, action: ActionType): void
@@ -21,12 +20,20 @@ export class PlayerActionCommand extends ClientCommand<PlayerActionMessage>
 		{
 			case ActionType.ATTACK:
 			{
-				player.punch();
+				if (player !== this._scene.player)
+				{
+					player.punch();
+				}
 				break;
 			}
 			case ActionType.HIT:
 			{
 				player.receiveDamage();
+				break;
+			}
+			case ActionType.DEATH:
+			{
+				player.death();
 				break;
 			}
 		}

@@ -14,7 +14,6 @@ export class UpdateWorldCommand extends ClientCommand<UpdateWorldMessage>
 			const player = this._scene.playersMap[playerIndex];
 			const playerState = playersMap[playerIndex];
 
-			this.checkDeath(playerState, player);
 			player.isAlive = playerState.isAlive;
 
 			player.rotation.y = playerState.rotation;
@@ -40,13 +39,5 @@ export class UpdateWorldCommand extends ClientCommand<UpdateWorldMessage>
 	{
 		player.maxHp = playerState.maxHP;
 		player.currHp = playerState.currHP;
-	}
-
-	private checkDeath(playerState: PlayerState, player: PlayerView): void
-	{
-		if (player.isAlive !== playerState.isAlive)
-		{
-			player.death();
-		}
 	}
 }

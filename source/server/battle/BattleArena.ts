@@ -167,13 +167,30 @@ export class BattleArena
 		// TODO: calculate damage considering armor
 		const damage = attack;
 		player.changeHP(-damage);
+		if (player.isAlive)
+		{
+			this._application.broadcastMessage({
+				type: CommandType.SV_PLAYER_ACTION,
+				data: {
+					playerIndex: player.index,
+					action: ActionType.HIT
+				}
+			});
+		}
 
-		this._application.broadcastMessage({
-			type: CommandType.SV_PLAYER_ACTION,
-			data: {
-				playerIndex: player.index,
-				action: ActionType.HIT
+		if (!player.isAlive)
+		{
+			if (!player.isDeathNotified)
+			{
+				player.isDeathNotified = true;
+				this._application.broadcastMessage({
+					type: CommandType.SV_PLAYER_ACTION,
+					data: {
+						playerIndex: player.index,
+						action: ActionType.DEATH
+					}
+				});
 			}
-		});
+		}
 	}
 }

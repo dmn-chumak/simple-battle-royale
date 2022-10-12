@@ -3,7 +3,7 @@ import { WeaponType } from "./data_types/WeaponType";
 import { PLAYER_RADIUS } from "./GameConfig";
 
 export const WEAPON_FIST: Weapon = {
-	attack: 6,
+	attack: 50,
 	range: PLAYER_RADIUS + 0.3,
 	angleDeg: 90,
 

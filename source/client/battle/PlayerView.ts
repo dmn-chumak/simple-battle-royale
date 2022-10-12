@@ -1,16 +1,10 @@
-import { SphereGeometry } from "three";
-import { MeshLambertMaterial, SkeletonHelper } from "three";
-import { Mesh } from "three";
-import { LoopOnce } from "three";
-import { AnimationMixer } from "three";
 import { Object3D } from "three";
 import { AnimationAction } from "three/src/animation/AnimationAction";
 import { clone as cloneSkeletone } from "three/examples/jsm/utils/SkeletonUtils";
 import { PlayerType } from "../../common/data_types/PlayerType";
 import { Weapon } from "../../common/data_types/Weapon";
-import { PLAYER_RADIUS } from "../../common/GameConfig";
-import { LoaderScene } from "../common_scenes/LoaderScene";
 import { ResourceManager } from "../ResourceManager";
+import { PlayerActionsAnimator } from "./animators/PlayerActionsAnimator";
 
 export class PlayerView extends Object3D
 {
@@ -18,10 +12,9 @@ export class PlayerView extends Object3D
 	private _threeAnimationActions: AnimationAction[];
 	private _currHp: number;
 	private _maxHp: number;
-	private _action: AnimationAction;
-	private _mixer: AnimationMixer;
 	private _isAlive: boolean;
 	private _weaponInfo: Weapon;
+	private _animator: PlayerActionsAnimator;
 
 	public constructor(type: PlayerType)
 	{
@@ -38,25 +31,10 @@ export class PlayerView extends Object3D
 
 		const resourceManager = ResourceManager.getInstance();
 		const gltfModel = resourceManager.obtainGLTFObject(type);
-
 		const cloneScene = cloneSkeletone(gltfModel.scene);
-
 		this.add(cloneScene);
 
-		this._mixer = new AnimationMixer(cloneScene);
-
-		for (const anim of gltfModel.animations)
-		{
-			console.log("anim", anim)
-
-			const action = this._mixer.clipAction(anim);
-			action.setLoop(LoopOnce, 0);
-			if (anim.name === PlayerView.ANIMATION_NAMES[1])
-			{
-				action.clampWhenFinished = true;
-			}
-			this._threeAnimationActions.push(action);
-		}
+		this._animator = new PlayerActionsAnimator(cloneScene, gltfModel);
 	}
 
 	public get currHp(): number
@@ -103,20 +81,28 @@ export class PlayerView extends Object3D
 	{
 		if (this._isAlive)
 		{
-			this.playAnimation("punch");
+			this._animator.punch();
 		}
 	}
 
 	public death(): void
 	{
-		this.playAnimation("dying");
+		this._animator.death();
 	}
 
 	public run(): void
 	{
 		if (this._isAlive)
 		{
-			this.playAnimation("run");
+			this._animator.run();
+		}
+	}
+
+	public stopRun(): void
+	{
+		if (this._isAlive)
+		{
+			this._animator.stopRun();
 		}
 	}
 
@@ -124,13 +110,13 @@ export class PlayerView extends Object3D
 	{
 		if (this._isAlive)
 		{
-			this.playAnimation("receive_damage");
+			this._animator.receiveDamage();
 		}
 	}
 
 	public updateMixer(delta: number): void
 	{
-		this._mixer.update(delta);
+		this._animator.updateMixer(delta);
 	}
 
 	private playAnimation(name: string): void
@@ -139,5 +125,10 @@ export class PlayerView extends Object3D
 		const action = this._threeAnimationActions[index];
 		action.stop();
 		action.play();
+	}
+
+	public checkRunningAnimations(): void
+	{
+
 	}
 }

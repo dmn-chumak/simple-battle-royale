@@ -16,13 +16,14 @@ export class Player
 	private readonly _index: number;
 	protected readonly _type: PlayerType;
 
-	protected _battleArena: BattleArena;
+	private _battleArena: BattleArena;
 	protected _body3D: Body;
 	private _rotation: number;
 
 	protected _currHP: number;
 	protected _maxHP: number;
 	protected _isDead: boolean;
+	private _isDeathNotified: boolean;
 
 	protected _defaultFist: Weapon;
 	protected _currWeapon: Weapon;
@@ -36,6 +37,7 @@ export class Player
 		this._currHP = Player.DEFAULT_MAX_HEALTH;
 		this._maxHP = Player.DEFAULT_MAX_HEALTH;
 		this._isDead = false;
+		this._isDeathNotified = false;
 
 		this._defaultFist = cloneNewWeapon(WEAPON_FIST);
 		this._currWeapon = this._defaultFist;
@@ -199,5 +201,15 @@ export class Player
 	public set rotation(value: number)
 	{
 		this._rotation = value;
+	}
+
+	public get isDeathNotified(): boolean
+	{
+		return this._isDeathNotified;
+	}
+
+	public set isDeathNotified(value: boolean)
+	{
+		this._isDeathNotified = value;
 	}
 }
