@@ -7,6 +7,7 @@ const commonConfig = {
 	resolve: {
 		extensions: [ ".tsx", ".ts", ".js" ],
 	},
+	plugins: [ new Webpack.IgnorePlugin({ resourceRegExp: /^pg-native$/ }) ],
 	optimization: {
 		usedExports: true
 	}

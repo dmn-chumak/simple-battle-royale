@@ -1,6 +1,7 @@
 import * as Express from "express";
 import { WebSocket } from "ws";
 import { WebSocketServer } from "ws";
+
 import { CommandMessageDecoder } from "../common/CommandMessageDecoder";
 import { CommandMessageEncoder } from "../common/CommandMessageEncoder";
 import { CommandType } from "../common/CommandType";
@@ -8,6 +9,8 @@ import { SERVER_FRAME_RATE } from "../common/GameConfig";
 import { SERVER_PORT } from "../common/GameConfig";
 import { ServerOutcomeMessageType } from "../common/ServerOutcomeMessageType";
 import { BattleArena } from "./battle/BattleArena";
+import { DBManager } from "./db/DBManager";
+import { sequelize } from "./db/Sequelizer";
 import { ServerClient } from "./ServerClient";
 import { AVAILABLE_RECIPES } from "./types/AvailableResipes";
 import { COMMAND_FACTORY } from "./types/ServerCommandFactory";
@@ -15,6 +18,7 @@ import { COMMAND_FACTORY } from "./types/ServerCommandFactory";
 export class ServerApplication
 {
 	private readonly _express: Express.Application;
+	private readonly _db: DBManager;
 	private readonly _battleArena: BattleArena;
 	private readonly _clients: ServerClient[];
 
@@ -26,6 +30,8 @@ export class ServerApplication
 	{
 		this._express = Express();
 		this._express.use(Express.static("resource"));
+
+		this._db = new DBManager();
 
 		this._battleArena = new BattleArena(this);
 		this._clients = [];
@@ -127,14 +133,17 @@ export class ServerApplication
 
 	public start(): void
 	{
-		const httpServer = this._express.listen(process.env.PORT || SERVER_PORT);
-		this._server = new WebSocketServer({ server: httpServer });
-		this._server.on("connection", this.socketConnectHandler);
+		sequelize.sync({ alter: true }).then(() =>
+		{
+			const httpServer = this._express.listen(process.env.PORT || SERVER_PORT);
+			this._server = new WebSocketServer({ server: httpServer });
+			this._server.on("connection", this.socketConnectHandler);
 
-		this._timer = setInterval(this.serverFrameHandler, SERVER_FRAME_RATE);
-		this.serverFrameHandler();
+			this._timer = setInterval(this.serverFrameHandler, SERVER_FRAME_RATE);
+			this.serverFrameHandler();
 
-		console.log(">> Server started!");
+			console.log(">> Server started!");
+		});
 	}
 
 	public get battleArena(): BattleArena
@@ -145,5 +154,10 @@ export class ServerApplication
 	public get clients(): ServerClient[]
 	{
 		return this._clients;
+	}
+
+	public get db(): DBManager
+	{
+		return this._db;
 	}
 }
