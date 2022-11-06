@@ -1,4 +1,6 @@
+import { Match } from "./models/Match";
 import { User } from "./models/User";
+import { UsersMatch } from "./models/UsersMatch";
 
 export class DBManager
 {
@@ -11,19 +13,19 @@ export class DBManager
 			{
 				if (checkUser.password === pass)
 				{
-					console.log("[LOGIN]: Access allowed");
+					// Access allowed
 					return checkUser;
 				}
 				else
 				{
-					console.log(`[LOGIN]: Access denied!`);
+					// Access denied!
 					return null;
 				}
 			}
 			else
 			{
-				console.log("[LOGIN]: Unregistered, registering");
-				const newUser = await User.create({ userId, password: pass });
+				// Unregistered, registering
+				const newUser = await User.create({userId, password: pass});
 				return newUser;
 			}
 		}
@@ -32,5 +34,15 @@ export class DBManager
 			// Something went wrong
 			return null;
 		}
+	}
+
+	public async createMatch(users: string[]): Promise<Match>
+	{
+		const newMatch = await Match.create({});
+		for (let index in users)
+		{
+			await UsersMatch.create({userId: users[index], matchId: newMatch.matchId});
+		}
+		return newMatch;
 	}
 }

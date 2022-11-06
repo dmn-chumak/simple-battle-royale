@@ -11,6 +11,7 @@ export class ServerClient
 	private readonly _commandsList: Command<ClientOutcomeMessageType>[];
 	private readonly _index: number;
 	private readonly _player: Player;
+	private _userId: string;
 
 	public constructor(socket: WebSocket, index: number)
 	{
@@ -46,5 +47,15 @@ export class ServerClient
 	public get player(): Player
 	{
 		return this._player;
+	}
+
+	public get userId(): string
+	{
+		return this._userId;
+	}
+
+	public set userId(value: string)
+	{
+		this._userId = value;
 	}
 }

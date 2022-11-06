@@ -6,6 +6,7 @@ import { WeaponType } from "../../common/data_types/WeaponType";
 import { ATTACK_DELAY } from "../../common/GameConfig";
 import { PLAYER_RADIUS } from "../../common/GameConfig";
 import { ServerApplication } from "../ServerApplication";
+import { ServerClient } from "../ServerClient";
 import { Player } from "./Player";
 
 interface AttackInfo
@@ -17,15 +18,20 @@ interface AttackInfo
 
 export class BattleArena
 {
+	private readonly _matchId: number;
+	private readonly _clients: ServerClient[];
+
 	protected readonly _application: ServerApplication;
 	protected readonly _world: World;
 	protected _physicsMaterial: Material;
 
 	protected _attacksPool: AttackInfo[];
 
-	public constructor(application: ServerApplication)
+	public constructor(application: ServerApplication, matchId: number)
 	{
 		this._application = application;
+		this._matchId = matchId;
+		this._clients = [];
 
 		this._world = new World();
 
@@ -45,7 +51,7 @@ export class BattleArena
 	{
 		const players: PlayerStateMap = {};
 
-		for (const client of this._application.clients)
+		for (const client of this._clients)
 		{
 			players[client.index] = client.player.getCurrentState();
 		}
@@ -53,14 +59,24 @@ export class BattleArena
 		return players;
 	}
 
-	public addPlayer(playerBody: Body): void
+	public addPlayer(playerBody: Body, client: ServerClient): void
 	{
 		playerBody.material = this._physicsMaterial;
 		this._world.addBody(playerBody);
+
+		this._clients.push(client);
 	}
 
-	public removePlayer(playerBody: Body): void
+	public removePlayer(playerBody: Body, client: ServerClient): void
 	{
+		this._clients.splice(this._clients.indexOf(client), 1);
+		this._application.broadcastMessage({
+			type: CommandType.SV_REMOVE_PLAYER,
+			data: {
+				index: client.index
+			}
+		}, this._clients);
+
 		this._world.removeBody(playerBody);
 	}
 
@@ -77,7 +93,7 @@ export class BattleArena
 				playerIndex: player.index,
 				action: ActionType.ATTACK
 			}
-		});
+		}, this._clients);
 	}
 
 	protected initWorld(): void
@@ -109,7 +125,7 @@ export class BattleArena
 	{
 		// create ground plane
 		const groundShape = new Plane();
-		const groundBody = new Body({ mass: 0, material: this._physicsMaterial });
+		const groundBody = new Body({mass: 0, material: this._physicsMaterial});
 		groundBody.addShape(groundShape);
 		groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
 		this._world.addBody(groundBody);
@@ -144,7 +160,7 @@ export class BattleArena
 			return;
 		}
 		const playerPos: Vec3 = player.body.position;
-		this._application.clients.forEach((client => {
+		this._clients.forEach((client => {
 			if (client && client.player && client.player.body && client.player.index !== player.index)
 			{
 				const clientPos: Vec3 = client.player.body.position;
@@ -174,6 +190,16 @@ export class BattleArena
 				playerIndex: player.index,
 				action: ActionType.HIT
 			}
-		});
+		}, this._clients);
+	}
+
+	public get matchId(): number
+	{
+		return this._matchId;
+	}
+
+	public get clients(): ServerClient[]
+	{
+		return this._clients;
 	}
 }

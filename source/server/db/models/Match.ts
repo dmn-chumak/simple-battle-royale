@@ -22,11 +22,6 @@ export class Match extends Model
 		return this.getDataValue("matchId");
 	}
 
-	public set matchId(value: number)
-	{
-		this.setDataValue("matchId", value);
-	}
-
 	@ForeignKey(() => User)
 	@Column
 	public get winnerUserId(): string

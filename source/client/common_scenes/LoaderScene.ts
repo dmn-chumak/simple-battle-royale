@@ -1,6 +1,6 @@
 import { PlayerType } from "../../common/data_types/PlayerType";
 import { SceneManager } from "../SceneManager";
-import { GameServerConnectScene } from "./GameServerConnectScene";
+import { LoginScene } from "./LoginScene";
 import { Scene } from "./Scene";
 
 export class LoaderScene extends Scene
@@ -23,7 +23,7 @@ export class LoaderScene extends Scene
 		};
 
 		resourceManager.completeCallback = () => {
-			manager.changeScene(new GameServerConnectScene());
+			manager.changeScene(new LoginScene());
 			console.log("Loading complete!");
 		};
 

@@ -7,6 +7,7 @@ import { Weapon } from "../../common/data_types/Weapon";
 import { PLAYER_RADIUS } from "../../common/GameConfig";
 import { cloneNewWeapon } from "../../common/WeaponsConfig";
 import { WEAPON_FIST } from "../../common/WeaponsConfig";
+import { ServerClient } from "../ServerClient";
 import { BattleArena } from "./BattleArena";
 
 export class Player
@@ -16,7 +17,7 @@ export class Player
 	private readonly _index: number;
 	protected readonly _type: PlayerType;
 
-	protected _battleArena: BattleArena;
+	private _battleArena: BattleArena;
 	protected _body3D: Body;
 	private _rotation: number;
 
@@ -42,7 +43,7 @@ export class Player
 		this._startWeaponCoolDownTime = -1;
 	}
 
-	public enterBattleArena(battleArena: BattleArena): void
+	public enterBattleArena(battleArena: BattleArena, client: ServerClient): void
 	{
 		this._battleArena = battleArena;
 
@@ -61,12 +62,12 @@ export class Player
 			linearDamping: 0.9
 		});
 
-		this._battleArena.addPlayer(this._body3D);
+		this._battleArena.addPlayer(this._body3D, client);
 	}
 
-	public leaveBattleArena(): void
+	public leaveBattleArena(client: ServerClient): void
 	{
-		this._battleArena.removePlayer(this._body3D);
+		this._battleArena.removePlayer(this._body3D, client);
 		this._battleArena = null;
 
 		this._body3D = null;
