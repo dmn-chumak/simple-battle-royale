@@ -109,7 +109,11 @@ export class ServerApplication
 			{
 				const client = clients[index];
 				client.player.enterBattleArena(newBattleArena, client);
+			}
 
+			for (let index in clients)
+			{
+				const client = clients[index];
 				client.sendMessage({
 					type: CommandType.SV_INITIALIZE_WORLD,
 					data: {
@@ -119,14 +123,6 @@ export class ServerApplication
 						index: client.index
 					}
 				});
-
-				this.broadcastMessage({
-					type: CommandType.SV_APPEND_PLAYER,
-					data: {
-						state: client.player.getCurrentState(),
-						index: client.index
-					}
-				}, clients);
 			}
 
 			this._battleArenas.push(newBattleArena);
